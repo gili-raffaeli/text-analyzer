@@ -5,7 +5,7 @@ from typing import Dict, List
 import pandas as pd
 
 class Preprocess:
-    def __init__(self, sentences_file, people_file, remove_words_file):
+    def __init__(self, sentences_file, people_file, remove_words_file): #changed to path
         try:
             self.__used_names = []
             self.__remove_words = self.preprocess_remove_words(remove_words_file)
@@ -120,3 +120,7 @@ class Preprocess:
     def __str__(self):
         return str(self.to_json())
     
+
+
+
+## להפריד עיבוד משפטים מעיבוד שמות
