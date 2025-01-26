@@ -1,5 +1,6 @@
 import json
 from preprocess import Preprocess
+import utils
 
 # python -m pytest
 
@@ -11,11 +12,9 @@ def q1_check(sentences_path, people_path, remove_words_path, output_path) -> boo
         preprocess_object = Preprocess(sentences_path, people_path, remove_words_path)
         actual_output =  preprocess_object.to_json()
 
-        expected_json = json.loads(expected_output)
         actual_json = json.loads(actual_output)
-
-        expected_json_str = json.dumps(expected_json, indent=4, sort_keys=True)
         actual_json_str = json.dumps(actual_json, indent=4, sort_keys=True)
+        expected_json_str = utils.read_json_file(output_path)
 
         return expected_json_str == actual_json_str
     except:

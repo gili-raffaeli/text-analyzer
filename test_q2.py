@@ -1,6 +1,7 @@
 import json
 from preprocess import Preprocess
 from k_seq import KSeq
+import utils
 
 # python -m pytest
 
@@ -11,13 +12,12 @@ def q1_check(sentences_path, people_path, remove_words_path, output_path, n) -> 
 
         preprocess_object = Preprocess(sentences_path, people_path, remove_words_path)
         k_seq = KSeq(preprocess_object.get_sentences(), n)
-        actual_output = k_seq.to_json()
+        actual_output = utils.to_json(k_seq.get_format_q_seq())
+        print(actual_output)
 
-        expected_json = json.loads(expected_output)
         actual_json = json.loads(actual_output)
-
-        expected_json_str = json.dumps(expected_json, indent=4, sort_keys=True)
         actual_json_str = json.dumps(actual_json, indent=4, sort_keys=True)
+        expected_json_str = utils.read_json_file(output_path)
 
         return expected_json_str == actual_json_str
     except:
@@ -53,3 +53,4 @@ def test3():
     }
     assert q1_check(**input)
 
+test1()

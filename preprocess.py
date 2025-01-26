@@ -5,12 +5,13 @@ from typing import Dict, List
 import pandas as pd
 
 class Preprocess:
-    def __init__(self, sentences_file, people_file, remove_words_file): #changed to path
+    def __init__(self, sentences_path, people_path, remove_words_path): #changed to path
         try:
             self.__used_names = []
-            self.__remove_words = self.preprocess_remove_words(remove_words_file)
-            self.__sentences = self.preprocess_sentences(sentences_file)
-            self.__people = self.preprocess_people(people_file)
+            self.__max_main_name_len = 0
+            self.__remove_words = self.preprocess_remove_words(remove_words_path)
+            self.__sentences = self.preprocess_sentences(sentences_path)
+            self.__people = self.preprocess_people(people_path)
         except Exception as e:
             print(f"Error during initialization: {e}")
 
@@ -22,17 +23,25 @@ class Preprocess:
     
     def get_people(self):
         return self.__people
-        
+    
+    def get_max_main_name_len(self) -> int:
+        return self.__max_main_name_len
+
     def load_csv_file(self, file_path):
         try:
+            # print('11')
+            # print(file_path)
             data_file = pd.read_csv(file_path)
-            if data_file.empty or data_file.columns.empty:
+            # print('12')
+            if data_file.empty or data_file.columns.empty: # do something else with this
+                # print('13')
                 print(f"Error: '{file_path}' is empty or has no valid columns.")
+            # print('14')
             return data_file
-        except FileNotFoundError:
-            print(f"FileNotFoundError: {e}")
-        except Exception as e:
-            print(f"Error: {e}")
+        except FileNotFoundError as e1:
+            print(f"FileNotFoundError: {e1}")
+        except Exception as e2:
+            print(f"Error: {e2}")
 
     def remove_punctuation(self, text: str) -> str:
         translator = str.maketrans(string.punctuation, " " * len(string.punctuation))
@@ -46,25 +55,30 @@ class Preprocess:
         text_with_single_spaces = self.make_single_spaces(removed_text)
         return text_with_single_spaces.lower().strip().split()
 
-    def preprocess_one_col_file(self, remove_words_file: str) -> List[str]:
-        df = self.load_csv_file(remove_words_file)
+    def preprocess_one_col_file(self, remove_words_path: str) -> List[str]:
+        # print('a')
+        df = self.load_csv_file(remove_words_path)
+        # print('b')
         first_column = df.iloc[:, 0]
+        # print('c')
         return (
             first_column.astype(str)
             .apply(self.clean_text)
             .tolist()
         )
     
-    def preprocess_remove_words(self, remove_words_file: str) -> List[str]:
-        word_lists = self.preprocess_one_col_file(remove_words_file)
+    def preprocess_remove_words(self, remove_words_path: str) -> List[str]:
+        word_lists = self.preprocess_one_col_file(remove_words_path)
         return set([word for sublist in word_lists for word in sublist])
     
     def remove_words(self, words: List[str]) -> List[str]:
-            return [word for word in words if word not in self.__remove_words] if words else None
+            return [word for word in words if word not in self.__remove_words] if words else []
 
-    def preprocess_sentences(self, sentences_file: str) -> List[List[str]]:
+    def preprocess_sentences(self, sentences_path: str) -> List[List[str]]:
         try:
-            cleaned_sentences = self.preprocess_one_col_file(sentences_file)
+            # print('1')
+            cleaned_sentences = self.preprocess_one_col_file(sentences_path)
+            # print('2')
             preprocess_sentences = []
             # remove unwanted words
             for sentence in cleaned_sentences:
@@ -77,8 +91,8 @@ class Preprocess:
     def is_name_used(self, name: List[str]) -> bool:
         return name in self.__used_names 
 
-    def preprocess_people(self, people_file: str):
-        people_data = self.load_csv_file(people_file)
+    def preprocess_people(self, people_path: str):
+        people_data = self.load_csv_file(people_path)
         people_names = []
         for index, row in people_data.iterrows():
             main_name = row.iloc[0]
@@ -91,6 +105,7 @@ class Preprocess:
 
             person_names = [fixed_main_name]
             self.__used_names.append(fixed_main_name)
+            if len(fixed_main_name) > self.__max_main_name_len: self.__max_main_name_len = len(fixed_main_name) 
 
             all_nicknames = []
             if isinstance(nicknames, str):

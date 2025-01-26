@@ -1,70 +1,104 @@
-import json
 from typing import Dict, List
-import preprocess
+import utils
 
 class KSeq:
-    def __init__(self, preprocessed_sentences, n):
-        self.__preprocessed_sentences = preprocessed_sentences #check?
-        self.__n = n # check?
+    """
+    A class for extracting and counting sequences of words from preprocessed sentences.
+    Attributes:
+        __preprocessed_sentences (List[List[str]]): A list of sentences, where each sentence is a list of words.
+        __sequence_length (int): The length of the sequences to extract.
+    """
 
-    def count_words_in_sentence(self, words: List[str], sentence: List[str]) -> int:
-        if len(sentence) < len(words): return 0
-        words_count = 0
-        for i in range(len(sentence) - len(words) + 1):
-            if words == sentence[i:i+len(words)]:
-                words_count += 1
-        return words_count
+    def __init__(self, preprocessed_sentences: List[List[str]], sequence_length: int):
+        try:
+            if not (isinstance(sequence_length, int) and sequence_length > 0): raise ValueError 
+            self.__sequence_length = sequence_length
+            if not utils.is_type_List_List_str(preprocessed_sentences): raise ValueError
+            self.__preprocessed_sentences = preprocessed_sentences
+        except ValueError as e:
+            print("Invalid Parameter: ", e)
+        except Exception as e:
+            print(e)
 
-    def cont_words(self, words: List[str]) -> int:
-        words_count = 0
+    def __count_sequence_in_sentence(self, sequence: List[str], sentence: List[str]) -> int:
+        """Counts occurrences of a specific sequence in a single sentence."""
+        if len(sentence) < len(sequence): return 0
+        sequence_count = 0
+        for i in range(len(sentence) - len(sequence) + 1):
+            if sequence == sentence[i:i+len(sequence)]:
+                sequence_count += 1
+        return sequence_count
+
+    def __cont_sequence(self, sequence: List[str]) -> int:
+        """Counts the occurrences of a sequence across all sentences."""
+        sequence_count = 0
         for sentence in self.__preprocessed_sentences:
-            words_count += self.count_words_in_sentence(words, sentence)
-        return words_count
+            sequence_count += self.__count_sequence_in_sentence(sequence, sentence)
+        return sequence_count
     
-    def get_words_len_n(self, n: int) -> List[List[str]]:
-        words_len_n = []
+    def __get_sequences_of_length(self, seq_len: int) -> List[List[str]]:
+        """Extracts all unique sequences of the specified length from all sentences."""
+        all_sequences = set()
         for sentence in self.__preprocessed_sentences:
-            if len(sentence) < n: continue
-            for i in range(len(sentence) - n + 1):
-                if sentence[i:i+n] not in words_len_n:
-                    words_len_n.append(sentence[i:i+n])
-        return words_len_n
+            if len(sentence) < seq_len: continue
+            for i in range(len(sentence) - seq_len + 1):
+                all_sequences.add(tuple(sentence[i:i+seq_len]))
+        all_sequences_list = [list(seq) for seq in all_sequences]
+        if len(all_sequences_list) == 0: return [[]]
+        return all_sequences_list
 
-    def n_seq(self, k) -> List[List[any]]:
-        n_seq = []
-        words_len_n = self.get_words_len_n(k)
-        for word_len_n in words_len_n:
-            words_cont = self.cont_words(word_len_n)
-            n_seq.append([" ".join(word_len_n), words_cont])
-        return sorted(n_seq, key=lambda x: x[0])
+    def __get_n_seq_counts(self, seq_len: int) -> Dict[str, int]:
+        """Returns a dictionary of sequence counts for sequences of a given length."""
+        n_seq_counts = {}
+        sequences_len_n = self.__get_sequences_of_length(seq_len)
+        for sequence_len_n in sequences_len_n:
+            sequence_count = self.__cont_sequence(sequence_len_n)
+            n_seq_counts[" ".join(sequence_len_n)] = sequence_count
+        return dict(sorted(n_seq_counts.items()))
     
-    def count_q_seq(self) -> List[List[List[any]]]:
-        k_seq = []
-        for k in range(1, self.__n + 1):
-            k_seq.append([f"{k}_seq", self.n_seq(k)])
-        return k_seq
+    def count_q_seq(self) -> Dict[str, Dict[str, int]]:
+        """Returns a dictionary of sequence counts for sequence lengths from 1 to `__sequence_length`."""
+        try:
+            k_seq = {}
+            for k in range(1, self.__sequence_length + 1):
+                k_seq[f"{k}_seq"] = self.__get_n_seq_counts(k)
+            return k_seq
+        except Exception as e:
+            print(e)
+            return None
+
     
-    def get_q_seq(self) -> Dict:
-        return {
-            "Question 2": {
-                f"{self.__n}-Seq Counts": self.count_q_seq()
+    def get_format_q_seq(self) -> Dict:
+        """Formats the sequence counts into a specific structure for output."""
+        try:
+            format_result = []
+            k_seq = self.count_q_seq()
+            for k_seq_type, n_seq_counts in k_seq.items():
+                n_seq_list = [[key, value] for key, value in n_seq_counts.items()]
+                format_result.append([k_seq_type, n_seq_list])
+
+            return {
+                "Question 2": {
+                    f"{self.__sequence_length}-Seq Counts":  format_result
+                }
             }
-        }
-
-    def to_json(self) -> str:
-        return json.dumps(self.get_q_seq(), indent=4)
+        except Exception as e:
+            print(e)
+            return None
     
     def __str__(self):
-        return str(self.to_json())
+        """Returns the string representation of the formatted sequence counts."""
+        return str(utils.to_json(self.get_format_q_seq()))
+    
+# from preprocess import Preprocess
+
+# input = {
+#     "sentences_file": 'examples/Q2_examples/example_1/sentences_small_1.csv',
+#     "people_file": 'examples/Q2_examples/example_1/people_small_1.csv',
+#     "remove_words_file": 'data/REMOVEWORDS.csv',
+# }
+# sentences = Preprocess(**input)
+# print(utils.to_json(KSeq(sentences.get_sentences(), 3).count_q_seq()))
 
 
-input = {
-    "sentences_file": 'examples/Q2_examples/example_1/sentences_small_1.csv',
-    "people_file": 'examples/Q2_examples/example_1/people_small_1.csv',
-    "remove_words_file": 'data/REMOVEWORDS.csv',
-}
-
-# pre = preprocess.Preprocess(**input)
-# x = KSeq(pre.get_sentences(), 3)
-# q_seq = x.get_q_seq()
-# print(q_seq["Question 2"]["3-Seq Counts"])
+       
