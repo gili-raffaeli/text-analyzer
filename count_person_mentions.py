@@ -1,5 +1,5 @@
-import json
 from typing import Dict, List
+import utils
 
 
 class CountPersonMentions:
@@ -40,24 +40,7 @@ class CountPersonMentions:
                 "Name Mentions": self.main_name_count(),
             }
         }
-
-    def to_json(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
     
     def __str__(self):
-        return str(self.to_json())
+        return utils.to_json_str(self.to_dict())
     
-
-# from k_seq import KSeq
-# import preprocess
-
-# input = {
-#         "sentences_file": 'examples/Q3_examples/example_4/sentences_small_4.csv',
-#         "people_file": 'examples/Q3_examples/example_4/people_small_4.csv',
-#         "remove_words_file": 'data/REMOVEWORDS.csv',
-#     }
-
-# pre = preprocess.Preprocess(**input)
-# x = KSeq(pre.get_sentences(), 3).count_q_seq()
-# z = CountPersonMentions(pre.get_people(), x)
-# print(z.main_name_count())

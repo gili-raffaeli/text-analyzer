@@ -56,7 +56,7 @@ class KSeq:
             n_seq_counts[" ".join(sequence_len_n)] = sequence_count
         return dict(sorted(n_seq_counts.items()))
     
-    def count_q_seq(self) -> Dict[str, Dict[str, int]]:
+    def count_sequences_len_k(self) -> Dict[str, Dict[str, int]]:
         """Returns a dictionary of sequence counts for sequence lengths from 1 to `__sequence_length`."""
         try:
             k_seq = {}
@@ -66,20 +66,20 @@ class KSeq:
         except Exception as e:
             print(e)
             return None
-
     
-    def get_format_q_seq(self) -> Dict:
+    def get_format_count_seq(self) -> Dict:
         """Formats the sequence counts into a specific structure for output."""
         try:
-            format_result = []
-            k_seq = self.count_q_seq()
+            list_seq_count = []
+            k_seq = self.count_sequences_len_k()
+            if k_seq == None: raise Exception # handle this better?
             for k_seq_type, n_seq_counts in k_seq.items():
-                n_seq_list = [[key, value] for key, value in n_seq_counts.items()]
-                format_result.append([k_seq_type, n_seq_list])
+                n_seq_list = utils.turn_Dict_str_any_to_List_any(n_seq_counts)
+                list_seq_count.append([k_seq_type, n_seq_list])
 
             return {
                 "Question 2": {
-                    f"{self.__sequence_length}-Seq Counts":  format_result
+                    f"{self.__sequence_length}-Seq Counts":  list_seq_count
                 }
             }
         except Exception as e:
@@ -88,17 +88,5 @@ class KSeq:
     
     def __str__(self):
         """Returns the string representation of the formatted sequence counts."""
-        return str(utils.to_json(self.get_format_q_seq()))
+        return utils.to_json_str(self.get_format_count_seq())
     
-# from preprocess import Preprocess
-
-# input = {
-#     "sentences_file": 'examples/Q2_examples/example_1/sentences_small_1.csv',
-#     "people_file": 'examples/Q2_examples/example_1/people_small_1.csv',
-#     "remove_words_file": 'data/REMOVEWORDS.csv',
-# }
-# sentences = Preprocess(**input)
-# print(utils.to_json(KSeq(sentences.get_sentences(), 3).count_q_seq()))
-
-
-       

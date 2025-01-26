@@ -1,7 +1,4 @@
-import json
 from typing import Dict, List
-from k_seq import KSeq
-from preprocess import Preprocess
 import utils
 
 
@@ -54,33 +51,5 @@ class SearchEngine:
         
     def __str__(self):
         """Returns the string representation of the formatted sequence counts."""
-        return str(utils.to_json(self.get_format()))
+        return utils.to_json_str(self.get_format())
 
-    
-sentences_path = "examples/Q4_examples/example_4/sentences_small_4.csv"
-REMOVEWORDS_path = "data/REMOVEWORDS.csv"
-Q4_result1_path = "examples/Q4_examples/example_4/Q4_result4.json"
-people_path = 'examples/Q3_examples/example_4/people_small_4.csv' #
-pre = Preprocess(sentences_path, people_path, REMOVEWORDS_path)
-pre_sentences = pre.get_sentences()
-num = pre.get_max_main_name_len()
-x = KSeq(pre_sentences, num).count_q_seq()
-kseq_query_keys_path = "examples/Q4_examples/example_4/kseq_query_keys_4.json"
-data = json.loads(utils.read_json_file(kseq_query_keys_path))
-# print('data["keys"]: ', data["keys"])
-xxx = []
-for seq in data["keys"]:
-    if len(seq) == 0: continue
-    # print("seq: ", seq)
-    seqqq = []
-    for word in seq:
-        if len(word) == 0: continue
-        # print("word: ", word)
-        x= pre.clean_text(word)
-        y = pre.remove_words(x)
-        if len(y) == 0: continue
-        seqqq.extend(y)
-    if seqqq != []: xxx.append(seqqq)
-print("xxx: ", xxx)
-search = SearchEngine(pre_sentences, xxx).get_format()
-print("1: ", search)

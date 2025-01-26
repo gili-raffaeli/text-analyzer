@@ -1,24 +1,15 @@
-import json
 from preprocess import Preprocess
 from k_seq import KSeq
 import utils
 
 # python -m pytest
 
-def q1_check(sentences_path, people_path, remove_words_path, output_path, n) -> bool:
+def q2_test(sentences_path, people_path, remove_words_path, output_path, n) -> bool:
     try:
-        with open(output_path, mode='r') as file:
-            expected_output = file.read()
-
-        preprocess_object = Preprocess(sentences_path, people_path, remove_words_path)
-        k_seq = KSeq(preprocess_object.get_sentences(), n)
-        actual_output = utils.to_json(k_seq.get_format_q_seq())
-        print(actual_output)
-
-        actual_json = json.loads(actual_output)
-        actual_json_str = json.dumps(actual_json, indent=4, sort_keys=True)
-        expected_json_str = utils.read_json_file(output_path)
-
+        preprocess_object = Preprocess(remove_words_path, sentences_path, people_path)
+        k_seq = KSeq(preprocess_object.get_preprocessed_sentences(), n)
+        actual_json_str = utils.to_json_str(k_seq.get_format_count_seq())
+        expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
     except:
         return False
@@ -31,7 +22,7 @@ def test1():
         "output_path": 'examples/Q2_examples/example_1/Q2_result1.json',
         "n": 3
     }
-    assert q1_check(**input)
+    assert q2_test(**input)
 
 def test2():
     input = {
@@ -41,7 +32,7 @@ def test2():
         "output_path": 'examples/Q2_examples/example_2/Q2_result2.json',
         "n": 4
     }
-    assert q1_check(**input)
+    assert q2_test(**input)
 
 def test3():
     input = {
@@ -51,6 +42,4 @@ def test3():
         "output_path": 'examples/Q2_examples/example_3/Q2_result3.json',
         "n": 5
     }
-    assert q1_check(**input)
-
-test1()
+    assert q2_test(**input)
