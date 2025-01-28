@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Any, Dict, List
 import utils
 import pandas as pd
 import string
@@ -152,7 +152,7 @@ class Preprocess:
             print(f"Error: {e}")
             return None
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> Dict[str, Dict[str, any]]:
         """Converts the preprocessed data into a dictionary format."""
         try:
             return {

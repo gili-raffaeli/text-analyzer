@@ -25,19 +25,17 @@ class SearchEngine:
 
     def preprocess_k_seq_data(self) -> Dict[str, List[List[str]]]:
         result = {}
-        # print("self.__pro_k_seq: ", self.__pro_k_seq)
         for seq in self.__pro_k_seq:
-            # print('seq: ', seq)
+            # print("seq: ", seq)
             sentences_with_seq = self.all_sentences_with_seq(seq)
             # print("sentences_with_seq: ", sentences_with_seq)
             if sentences_with_seq != [[]]: result[" ".join(seq)] = sentences_with_seq
         return dict(sorted(result.items()))
 
-    def get_format(self):
+    def to_dict(self) -> Dict[str, Dict[str, any]]:
         """Formats the sequence counts into a specific structure for output."""
         try:
             k_seq = self.preprocess_k_seq_data()
-            # print('k_seq: ', k_seq)
             n_seq_list = [[key, value] for key, value in k_seq.items()]
 
             return {
@@ -51,5 +49,5 @@ class SearchEngine:
         
     def __str__(self):
         """Returns the string representation of the formatted sequence counts."""
-        return utils.to_json_str(self.get_format())
+        return utils.to_json_str(self.to_dict())
 

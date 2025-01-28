@@ -67,7 +67,7 @@ class KSeq:
             print(e)
             return None
     
-    def get_format_count_seq(self) -> Dict:
+    def to_dict(self) -> Dict[str, Dict[str, any]]:
         """Formats the sequence counts into a specific structure for output."""
         try:
             list_seq_count = []
@@ -88,5 +88,5 @@ class KSeq:
     
     def __str__(self):
         """Returns the string representation of the formatted sequence counts."""
-        return utils.to_json_str(self.get_format_count_seq())
+        return utils.to_json_str(self.to_dict())
     

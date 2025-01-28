@@ -11,7 +11,7 @@ def q4_test(sentences_path, kseq_query_keys_path, remove_words_path, output_path
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         query_data = json.loads(utils.read_json_file_to_str(kseq_query_keys_path))
         search_engine = SearchEngine(preprocessed_sentences, preprocessor.clean_List_List_str(query_data["keys"]))
-        search_result = search_engine.get_format()
+        search_result = search_engine.to_dict()
         actual_json_str = utils.to_json_str(search_result)
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
