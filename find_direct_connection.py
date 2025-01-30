@@ -73,6 +73,7 @@ class FindDirectConnection:
 
     def find_indirect_connections(self):
         pass
+        pass
 
 
     def to_dict_7(self) -> Dict[str, Dict[str, any]]:
