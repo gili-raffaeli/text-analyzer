@@ -26,9 +26,7 @@ class SearchEngine:
     def preprocess_k_seq_data(self) -> Dict[str, List[List[str]]]:
         result = {}
         for seq in self.__pro_k_seq:
-            # print("seq: ", seq)
             sentences_with_seq = self.all_sentences_with_seq(seq)
-            # print("sentences_with_seq: ", sentences_with_seq)
             if sentences_with_seq != [[]]: result[" ".join(seq)] = sentences_with_seq
         return dict(sorted(result.items()))
 

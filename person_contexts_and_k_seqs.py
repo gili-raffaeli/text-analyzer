@@ -55,3 +55,4 @@ class PersonContextsAndKSeqs:
         """Returns the JSON string representation of the object."""
         return utils.to_json_str(self.to_dict())
     
+# לשפר!!!

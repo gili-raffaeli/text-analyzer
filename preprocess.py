@@ -10,7 +10,7 @@ class Preprocess:
     def __init__(self, remove_words_path, sentences_path, people_path = None):
         try:
             self.__used_names = []
-            self.__longest_main_name_len = 0
+            self.__longest_main_name_len = 0 # remove maybe
             self.__preprocessed_remove_words = self.__preprocess_remove_words(remove_words_path)
             self.__preprocessed_sentences = self.__preprocess_sentences(sentences_path)
             if people_path != None: 
@@ -168,3 +168,5 @@ class Preprocess:
         """Returns the JSON string representation of the object."""
         return utils.to_json_str(self.to_dict())
     
+
+# todo: dont count nick name if its fully in the main name
