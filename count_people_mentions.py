@@ -30,26 +30,19 @@ class CountPeopleMentions:
         main_name = person[0]
         nicknames = person[1]
         for name in main_name:
-            # print("name: ", name)
             count += self.get_name_count([name])
-            if self.get_name_count([name]): print('self.get_name_count([name]): ', name, self.get_name_count([name]))
         for nickname in nicknames:
-            # print("nickname: ", nickname)
             count += self.get_name_count(nickname)
-            if self.get_name_count([name]):  print("self.get_name_count(nickname): ", nickname, self.get_name_count(nickname))
         return count
 
     def count_people_mentions(self) -> Dict[str, int]:
         people_mentions = {}
         for person in self.__preprocess_people:
             count = self.count_person(person)
-            # print("person, count: ", person, count)
             if count:
                 people_mentions[" ".join(person[0])] = count
-                # print(": ", person[0], count)
         # return sorted(people_mentions, key=lambda x: x[0]) # if people_mentions else []
         x = dict(sorted(people_mentions.items())) #, key=lambda x: x[0])
-        print("x: ", x)
         return x 
     
     def to_dict(self) -> Dict[str, Dict[str, any]]:
