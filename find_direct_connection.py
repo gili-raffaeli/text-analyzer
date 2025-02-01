@@ -52,21 +52,19 @@ class FindDirectConnection:
                 people.append(name)
         return people
     
-    # if sum(mentions[i:i + self.__window_size]) >= self.__threshold:
-
-    
     def find_connections(self) -> set[tuple[str]]:
         all_pairs = []
         people_mentions = self.get_all_mentions()
         for i in range(len(self.__preprocessed_sentences) - self.__window_size + 1):
             mentioned_people_in_window: List[str] = self.mentioned_people_in_window(people_mentions, i)
             all_pairs.extend(combinations(mentioned_people_in_window, 2))
-        print("all_pairs: ", all_pairs)
+        # print("all_pairs: ", all_pairs)
         pair_counts = dict(Counter(all_pairs))  # Count occurrences of each pair
         right_pairs = []
         for pair, amount in pair_counts.items():
             if amount >= self.__threshold:
                 right_pairs.append(pair)
+        print("right_pairs: ", right_pairs)
         return right_pairs
 
     def to_dict_6(self) -> Dict[str, Dict[str, any]]:
@@ -96,31 +94,59 @@ class FindDirectConnection:
         print(people_connections_dict)
         return people_connections_dict
     
-    def check_for_connection(self, current: str, destination: str, checked: List[str], people_connections_dict) -> bool:
+    def check_for_connection(self, current: str, destination: str, checked: List[str], people_connections_dict, depth: int, is_8: bool) -> bool:
+        if depth == 0: return False
         if current == destination:
-            return True
+            if is_8:
+                return depth == 1
+            else:
+                return True
         if current not in people_connections_dict.keys(): return False
         connected = people_connections_dict[current]
         for connect in connected:
             if connect not in checked:
-                found_connection = self.check_for_connection(connect, destination, checked + [current], people_connections_dict)
+                found_connection = self.check_for_connection(connect, destination, checked + [current], people_connections_dict, depth - 1, is_8)
                 if found_connection: return True
         return False
     
-    def check_connections(self, pairs_to_check: List[List[str]]):
+    # def check_for_connection_length(self, current: str, destination: str, checked: List[str], people_connections_dict, depth: int) -> bool:
+    #     if depth == 0: return False
+    #     if current == destination:
+    #         return depth == 1
+    #     if current not in people_connections_dict.keys(): return False
+    #     connected = people_connections_dict[current]
+    #     for connect in connected:
+    #         if connect not in checked:
+    #             found_connection = self.check_for_connection(connect, destination, checked + [current], people_connections_dict, depth - 1)
+    #             if found_connection: return True
+    #     return False
+
+    def check_connections(self, pairs_to_check: List[List[str]], fixed_length: int, is_8: bool):
         check_connection = self.create_people_nodes()
         result = []
         for pair in pairs_to_check:
-            is_connections = self.check_for_connection(pair[0], pair[1], [], check_connection)
+            is_connections = self.check_for_connection(pair[0], pair[1], [], check_connection, fixed_length, is_8)
             result.append(pair + [is_connections])
         return result
             
 
-    def to_dict_7(self, pairs_to_check: List[List[str]]) -> Dict[str, Dict[str, any]]:
+    # def to_dict_7(self, pairs_to_check: List[List[str]]) -> Dict[str, Dict[str, any]]:
+    #     try:
+    #         return {
+    #             "Question 7": {
+    #                 "Pair Matches": self.check_connections(pairs_to_check)
+    #             }
+    #         }
+    #     except Exception as e:
+    #         print(f"Error: {e}")
+
+    # combine this two
+    def to_dict_7_8(self, q: int, pairs_to_check: List[List[str]], fixed_length: int) -> Dict[str, Dict[str, any]]:
+        print('p')
         try:
             return {
-                "Question 7": {
-                    "Pair Matches": self.check_connections(pairs_to_check)
+                f"Question {q}": {
+                    "Pair Matches": self.check_connections(pairs_to_check, fixed_length, q==8)
                 }
             }
         except Exception as e:

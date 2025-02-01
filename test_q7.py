@@ -17,7 +17,7 @@ def q7_test(sentences_path, people_path, people_connections, remove_words_path, 
         except:
             print("oops")
         formated = sorted([sorted(name for name in pair) for pair in expected_json["keys"]])
-        result = FindDirectConnection(preprocessed_sentences, preprocessed_people, window_size, threshold).to_dict_7(formated)
+        result = FindDirectConnection(preprocessed_sentences, preprocessed_people, window_size, threshold).to_dict_7_8(7, formated, maximal_distance)
         actual_json_str = utils.to_json_str(result)
         print("actual_json_str: ", actual_json_str)
         expected_json_str = utils.read_json_file_to_str(output_path)
@@ -38,7 +38,7 @@ def test1():
         "maximal_distance": 1000
     }
     assert q7_test(**input)
-# test1()
+
 def test2():
     input = {
         "sentences_path": 'examples/Q7_examples/exmaple_2/sentences_small_2.csv',
