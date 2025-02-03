@@ -136,7 +136,7 @@ def main():
     elif args.task == '3': json_print(CountPeopleMentions(processed_names, processed_sentences).task_3_format())
     elif args.task == '4':
         query_data = utils.read_json_file(args.qsek_query_path)
-        kseq_query_keys = query_data["keys"] # processed_object.clean_List_List_str(...)
+        kseq_query_keys = query_data["keys"] # processed_object.clean_List_List_str(...) 
         json_print(SearchEngine(processed_sentences, kseq_query_keys).task_4_format())
     elif args.task == '5': json_print(PersonContexts(processed_sentences, processed_names, args.maxk).task_5_format())
     elif args.task == '6': json_print(FindConnections(processed_sentences, processed_names, args.windowsize, args.threshold).task_6_format())
