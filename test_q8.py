@@ -1,5 +1,6 @@
 import json
-from find_direct_connection import FindDirectConnection
+import timeit
+from find_connections import FindConnections
 from preprocess import Preprocess
 import utils
 
@@ -17,9 +18,13 @@ def q8_test(sentences_path, people_path, people_connections, remove_words_path, 
         except:
             print("oops")
         formated = sorted([sorted(name for name in pair) for pair in expected_json["keys"]])
-        result = FindDirectConnection(preprocessed_sentences, preprocessed_people, window_size, threshold).to_dict_7_8(8, formated, fixed_length)
+        start_time = timeit.default_timer()
+        result = FindConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_7_8_format(formated, maximal_distance, fixed_length)
+        end_time = timeit.default_timer()
+        runtime = end_time - start_time
+        # print("runtime: ", runtime)
         actual_json_str = utils.to_json_str(result)
-        print("actual_json_str: ", actual_json_str)
+        # print("actual_json_str: ", actual_json_str)
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
     except:
@@ -67,4 +72,6 @@ def test3():
         "maximal_distance": 1000
     }
     assert q8_test(**input)
+# test1()
+# test2()
 # test3()

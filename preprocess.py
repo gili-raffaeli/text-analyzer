@@ -1,4 +1,5 @@
-from typing import Any, Dict, List
+import json
+from typing import Dict, List
 import utils
 import pandas as pd
 import string
@@ -10,7 +11,6 @@ class Preprocess:
     def __init__(self, remove_words_path, sentences_path, people_path = None):
         try:
             self.__used_names = []
-            self.__longest_main_name_len = 0 # remove maybe
             self.__preprocessed_remove_words = self.__preprocess_remove_words(remove_words_path)
             self.__preprocessed_sentences = self.__preprocess_sentences(sentences_path)
             if people_path != None: 
@@ -18,24 +18,22 @@ class Preprocess:
             else:
                 self.__preprocessed_people = None
         except Exception as e:
-            print(f"Error during initialization: {e}")
-
-    def get_preprocessed_remove_words(self):
-        """Returns the set of words that will be removed from the text."""
-        return self.__preprocessed_remove_words
+            print(f"Error during Preprocess initialization: {e}")
     
     def get_preprocessed_sentences(self):
         """Returns the preprocessed sentences."""
-        return self.__preprocessed_sentences
+        try:
+            return self.__preprocessed_sentences
+        except Exception as e:
+            print(f"Error getting preprocessed sentences: {e}")
     
     def get_preprocessed_people(self):
         """Returns the preprocessed people data."""
-        return self.__preprocessed_people
+        try:
+            return self.__preprocessed_people
+        except Exception as e:
+            print(f"Error getting preprocessed people: {e}")
     
-    def get_longest_main_name_len(self) -> int:
-        """Returns the length of the longest main name found in the people data."""
-        return self.__longest_main_name_len
-
     def __load_csv_file(self, file_path):
         """Loads a CSV file and returns the data."""
         try:
@@ -46,9 +44,9 @@ class Preprocess:
         except FileNotFoundError:
             print(f"Error: File not found - {file_path}")
         except ValueError as ve:
-            print(ve)
+            print(f"ValueError in load_csv_file: {ve}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            print(f"Error in load_csv_file: {e}")
         return None
 
     def __remove_punctuation(self, text: str) -> str:
@@ -68,13 +66,16 @@ class Preprocess:
 
     def __process_single_column_file(self, file_path: str) -> List[str]:
         """Processes a CSV file with a single column and returns a list of cleaned words."""
-        df = self.__load_csv_file(file_path) #here?
-        first_column = df.iloc[:, 0]
-        return (
-            first_column.astype(str)
-            .apply(self.__clean_text)
-            .tolist()
-        )
+        try:
+            df = self.__load_csv_file(file_path)
+            first_column = df.iloc[:, 0]
+            return (
+                first_column.astype(str)
+                .apply(self.__clean_text)
+                .tolist()
+            )
+        except Exception as e:
+            print(f"Error in process_single_column_file: {e}")
     
     def __preprocess_remove_words(self, remove_words_path: str) -> List[str]:
         """Loads and processes the words that need to be removed from the text."""
@@ -115,8 +116,9 @@ class Preprocess:
                 main_name_clean = self.__remove_words(self.__clean_text(main_name))
                 if self.__is_name_used(main_name_clean): continue
                 self.__used_names.append(main_name_clean)
-                self.__longest_main_name_len = max(self.__longest_main_name_len, len(main_name_clean)) # save longest name length
 
+                if any(main_name_clean == person[0] for person in people_names): continue
+                if not main_name_clean: continue
                 person_names = [main_name_clean]
                 all_nicknames = []
                 if isinstance(nicknames, str):
@@ -149,11 +151,11 @@ class Preprocess:
                 if cleaned_sub_list: cleaned_object.append(cleaned_sub_list)
             return cleaned_object
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error in clean_List_List_str: {e}")
             return None
 
-    def to_dict(self) -> Dict[str, Dict[str, any]]:
-        """Converts the preprocessed data into a dictionary format."""
+    def task_1_format(self) -> Dict[str, Dict[str, any]]:
+        """Converts the preprocessed data into the task 1 format."""
         try:
             return {
                 "Question 1": {
@@ -162,11 +164,6 @@ class Preprocess:
                 }
             }
         except Exception as e:
-            print(f"Error: {e}")
-    
-    def __str__(self):
-        """Returns the JSON string representation of the object."""
-        return utils.to_json_str(self.to_dict())
-    
+            print(f"Error in task_1_format: {e}")
 
-# todo: dont count nick name if its fully in the main name
+    

@@ -7,30 +7,35 @@ class SearchEngine:
         self.__pro_k_seq = pro_query_keys # check
         self.__preprocessed_sentences = preprocessed_sentences # check
 
-
-    def sentence_with_seq(self, seq: List[str], sentence: List[str]) -> List[str]:
-        if len(sentence) < len(seq): return None
-        for i in range(len(sentence) - len(seq) + 1):
-            if seq == sentence[i:i+len(seq)]:
-                return sentence
-        return None
+    def __is_seq_in_sentence_(self, seq: List[str], sentence: List[str]) -> bool:
+        """Checks if a given sequence appears in a sentence."""
+        if len(sentence) < len(seq): return False
+        seq_str = " ".join(seq)
+        sentence_str = " ".join(sentence)
+        return seq_str in sentence_str
     
-    def all_sentences_with_seq(self, seq: List[str]) -> List[List[str]]:
+    def __all_sentences_with_seq(self, seq: List[str]) -> List[List[str]]:
+        """Finds all sentences that contain a given sequence."""
         all_sentences = []
         for sentence in self.__preprocessed_sentences:
-            is_sentence = self.sentence_with_seq(seq, sentence)
-            if is_sentence: all_sentences.append(is_sentence) 
+            if self.__is_seq_in_sentence_(seq, sentence): 
+                all_sentences.append(sentence) 
         if all_sentences == []: return [[]]
         return sorted(all_sentences)
 
     def preprocess_k_seq_data(self) -> Dict[str, List[List[str]]]:
-        result = {}
-        for seq in self.__pro_k_seq:
-            sentences_with_seq = self.all_sentences_with_seq(seq)
-            if sentences_with_seq != [[]]: result[" ".join(seq)] = sentences_with_seq
-        return dict(sorted(result.items()))
+        """Processes all query sequences and finds their matching sentences."""
+        try:
+            result = {}
+            for seq in self.__pro_k_seq:
+                sentences_with_seq = self.__all_sentences_with_seq(seq)
+                if sentences_with_seq != [[]]: result[" ".join(seq)] = sentences_with_seq
+            return dict(sorted(result.items()))
+        except Exception as e:
+            print(f"Error in preprocess_k_seq_data: {e}")
+            return {}
 
-    def to_dict(self) -> Dict[str, Dict[str, any]]:
+    def task_4_format(self) -> Dict[str, Dict[str, any]]:
         """Formats the sequence counts into a specific structure for output."""
         try:
             k_seq = self.preprocess_k_seq_data()
@@ -42,10 +47,4 @@ class SearchEngine:
                 }
             }
         except Exception as e:
-            print("Error: ", e)
-            return None
-        
-    def __str__(self):
-        """Returns the string representation of the formatted sequence counts."""
-        return utils.to_json_str(self.to_dict())
-
+            print(f"Error in task_4_format: {e}")

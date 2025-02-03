@@ -1,5 +1,5 @@
 from preprocess import Preprocess
-from k_seq import KSeq
+from count_words_seq import CountWordsSeq
 import utils
 
 # python -m pytest
@@ -7,8 +7,8 @@ import utils
 def q2_test(sentences_path, remove_words_path, output_path, sequence_length) -> bool:
     try:
         preprocess_object = Preprocess(remove_words_path, sentences_path)
-        k_seq = KSeq(preprocess_object.get_preprocessed_sentences(), sequence_length)
-        actual_json_str = utils.to_json_str(k_seq.to_dict())
+        k_seq = CountWordsSeq(preprocess_object.get_preprocessed_sentences(), sequence_length)
+        actual_json_str = utils.to_json_str(k_seq.task_2_format())
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
     except:
@@ -19,7 +19,7 @@ def test1():
         "sentences_path": 'examples/Q2_examples/example_1/sentences_small_1.csv',
         "remove_words_path": 'data/REMOVEWORDS.csv',
         "output_path": 'examples/Q2_examples/example_1/Q2_result1.json',
-        "sequence_length": 3
+        # "sequence_length": 3
     }
     assert q2_test(**input)
 

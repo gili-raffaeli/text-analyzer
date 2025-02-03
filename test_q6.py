@@ -1,4 +1,4 @@
-from find_direct_connection import FindDirectConnection
+from find_connections import FindConnections
 from preprocess import Preprocess
 import utils
 
@@ -9,7 +9,7 @@ def q6_test(sentences_path, people_path, remove_words_path, output_path, window_
         preprocessor = Preprocess(remove_words_path, sentences_path, people_path)
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         preprocessed_people = preprocessor.get_preprocessed_people()
-        result = FindDirectConnection(preprocessed_sentences, preprocessed_people, window_size, threshold).to_dict_6()
+        result = FindConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_6_format()
         actual_json_str = utils.to_json_str(result)
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
@@ -24,7 +24,7 @@ def test1():
         "remove_words_path": 'data/REMOVEWORDS.csv',
         "output_path": 'examples/Q6_examples/example_1/Q6_result1_w4_t4.json',
         "window_size": 4, 
-        "threshold" : 4
+        "threshold" : 4,
     }
     assert q6_test(**input)
 
@@ -35,7 +35,7 @@ def test2():
         "remove_words_path": 'data/REMOVEWORDS.csv',
         "output_path": 'examples/Q6_examples/exmaple_2/Q6_result2_w3_t2.json',
         "window_size": 3, 
-        "threshold" : 2
+        "threshold" : 2,
     }
     assert q6_test(**input)
 
@@ -46,10 +46,10 @@ def test3():
         "remove_words_path": 'data/REMOVEWORDS.csv',
         "output_path": 'examples/Q6_examples/exmaple_3/Q6_result2_w5_t2.json',
         "window_size": 5, 
-        "threshold" : 2
+        "threshold" : 2,
     }
     assert q6_test(**input)
-
+test3()
 def test4():
     input = {
         "sentences_path": 'examples/Q6_examples/exmaple_4/sentences_small_4.csv',
@@ -57,6 +57,6 @@ def test4():
         "remove_words_path": 'data/REMOVEWORDS.csv',
         "output_path": 'examples/Q6_examples/exmaple_4/Q6_result2_w5_t1.json',
         "window_size": 5, 
-        "threshold" : 1
+        "threshold" : 1,
     }
     assert q6_test(**input)

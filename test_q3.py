@@ -1,6 +1,6 @@
 from count_people_mentions import CountPeopleMentions
 from preprocess import Preprocess
-from k_seq import KSeq
+from count_words_seq import CountWordsSeq
 import utils
 
 # python -m pytest
@@ -8,9 +8,7 @@ import utils
 def q3_test(sentences_path, people_path, remove_words_path, output_path) -> bool:
     try:
         preprocess_object = Preprocess(remove_words_path, sentences_path, people_path)
-        # longest_name = preprocess_object.get_longest_main_name_len()
-        # k_seq = KSeq(preprocess_object.get_preprocessed_sentences(), longest_name).count_sequences_len_k()
-        people = CountPeopleMentions(preprocess_object.get_preprocessed_people(), preprocess_object.get_preprocessed_sentences()).to_dict() # , k_seq
+        people = CountPeopleMentions(preprocess_object.get_preprocessed_people(), preprocess_object.get_preprocessed_sentences()).task_3_format()
         actual_json_str = utils.to_json_str(people)
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str

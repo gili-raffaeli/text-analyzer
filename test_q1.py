@@ -6,7 +6,7 @@ import utils
 def q1_test(sentences_path, people_path, remove_words_path, output_path) -> bool:
     try:
         preprocess_object = Preprocess(remove_words_path, sentences_path, people_path)
-        actual_output_str = utils.to_json_str(preprocess_object.to_dict())
+        actual_output_str = utils.to_json_str(preprocess_object.task_1_format())
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_output_str
     except:

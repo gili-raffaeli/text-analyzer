@@ -1,4 +1,4 @@
-from person_contexts_and_k_seqs import PersonContextsAndKSeqs
+from person_contexts import PersonContexts
 from preprocess import Preprocess
 import utils
 
@@ -9,7 +9,7 @@ def q5_test(sentences_path, people_path, remove_words_path, output_path, sequenc
         preprocessor = Preprocess(remove_words_path, sentences_path, people_path)
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         preprocessed_people = preprocessor.get_preprocessed_people()
-        result = PersonContextsAndKSeqs(preprocessed_sentences, preprocessed_people, sequence_length).to_dict()
+        result = PersonContexts(preprocessed_sentences, preprocessed_people, sequence_length).task_5_format()
         actual_json_str = utils.to_json_str(result)
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
