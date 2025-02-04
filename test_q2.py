@@ -1,40 +1,6593 @@
 from preprocess import Preprocess
 from count_words_seq import CountWordsSeq
-import utils
+from utils import to_json_str, read_json_file_to_str, create_temp_file
+import os
 
-def q2_test(sentences_path, remove_words_path, output_path, sequence_length) -> bool:
+
+def q2_test(sentences_content, remove_words_content, output_content, sequence_length) -> bool:
     try:
+        sentences_path = create_temp_file(sentences_content)
+        remove_words_path = create_temp_file(remove_words_content)
+        output_path = create_temp_file(output_content, ".json")
+        
         preprocess_object = Preprocess(remove_words_path, sentences_path)
         k_seq = CountWordsSeq(preprocess_object.get_preprocessed_sentences(), sequence_length)
-        actual_json_str = utils.to_json_str(k_seq.task_2_format())
-        expected_json_str = utils.read_json_file_to_str(output_path)
+        actual_json_str = to_json_str(k_seq.task_2_format())
+        expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
     except:
         return False
+    finally:
+        os.unlink(sentences_path)
+        os.unlink(remove_words_path)
+        os.unlink(output_path)
 
 def test1():
-    input = {
-        "sentences_path": 'examples/Q2_examples/example_1/sentences_small_1.csv',
-        "remove_words_path": 'data/REMOVEWORDS.csv',
-        "output_path": 'examples/Q2_examples/example_1/Q2_result1.json',
-        "sequence_length": 3
+    sentences_content = """sentence
+"Under a tuft of jet- black hair over boy forehead Dumbledore and  McGonagall could see a curiously shaped cut, like a bolt of lightning."
+` Is that where-?` whispered Professor  McGonagall.
+"` Yes,` said  Dumbledore.`  Dumbledore'll have that scar forever.` ` Couldn't you do something about scar,  Dumbledore?` ` Even if I could, I wouldn't."
+Scars can come in handy.
+I have one myself above my left knee that is a perfect map of the London Underground.
+"Well-- give  Dumbledore here,  Hagrid-- we'd better get this over with.`   Dumbledore took  Harry in  Harry arms and turned toward the   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley' house."
+"` Could I-- could I say good- bye to  Harry, sir?` asked  Hagrid."
+"Harry bent  Harry great, shaggy head over  Harry and gave head what must have been a very scratchy, whiskery kiss."
+"Then, suddenly,  Hagrid let out a howl like a wounded dog."
+"` Shhh!` hissed Professor  McGonagall,` you'll wake the  Muggles!` ` S- s- sorry,` sobbed  Hagrid, taking out a large, spotted handkerchief and burying  Hagrid face in handkerchief.` But I c- c-can't stand handkerchief--  Lily an'  James dead-- an' poor little  Harry off ter live with  Muggles-` ` Yes, yes, handkerchief's all very sad, but get a grip on yourself,  Hagrid, or we'll be found,` Professor  McGonagall whispered, patting  Hagrid gingerly on the arm as  Dumbledore stepped over the low garden wall and walked to the front door."
+"Dumbledore laid  Harry gently on the doorstep, took a letter out of  Dumbledore cloak, tucked letter inside  Harry's blankets, and then came back to the other two."
+"For a full minute the three of two stood and looked at the little bundle;   Hagrid's shoulders shook, Professor  McGonagall blinked furiously, and the twinkling light that usually shone from  Dumbledore's eyes seemed to have gone out."
+"` Well,` said  Dumbledore finally,` that's that."
+We've no business staying here.
+"We may as well go and join the celebrations.` ` Yeah,` said  Hagrid in a very muffled voice,` I'll be takin'  Sirius  Sirius bike back.G'night, Professor  McGonagall-- Professor  Dumbledore, sir.`  Wiping  Sirius streaming eyes on  Sirius jacket sleeve,  Hagrid swung  Hagrid onto the motorcycle and kicked the engine into life; with a roar engine rose into the air and off into the night."
+"` I shall see you soon, I expect, Professor  McGonagall,` said  Dumbledore, nodding to voice."
+Professor  McGonagall blew  McGonagall nose in reply.
+Dumbledore turned and walked back down the street.
+On the corner  Dumbledore stopped and took out the silver Put- Outer.
+"Dumbledore clicked Outer once, and twelve balls of light sped back to balls street lamps so that Privet Drive glowed suddenly orange and  Dumbledore could make out a tabby cat slinking around the corner at the other end of the street."
+Dumbledore could just see the bundle of blankets on the step of number four.
+"` Good luck,  Harry,`  Dumbledore murmured."
+"Dumbledore turned on  Dumbledore heel and with a swish of  Dumbledore cloak,  Dumbledore was gone."
+"A breeze ruffled the neat hedges of Privet Drive, which lay silent and tidy under the inky sky, the very last place you would expect astonishing things to happen."
+Harry  Potter rolled over inside  Dumbledore blankets without waking up.
+"One small hand closed on the letter beside  Dumbledore and  Dumbledore slept on, not knowing  Dumbledore was special, not knowing  Dumbledore was famous, not knowing  Dumbledore would be woken in a few hours' time by   Mrs. Dursley's scream as   Mrs. Dursley opened the front door to put out the milk bottles, nor that  Dumbledore would spend the next few weeks being prodded and pinched by  Dumbledore cousin   Dudley...  Dumbledore couldn't know that at this very moment, people meeting in secret all over the country were holding up people glasses and saying in hushed voices:` To   Harry  Potter-- the boy who lived!"
+"THE VANISHING GLASS  Nearly ten years had passed since the   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley had woken up to find   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley nephew on the front step, but Privet Drive had hardly changed at all."
+"The sun rose on the same tidy front gardens and lit up the brass number four on the   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley' front door; number crept into   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley living room, which was almost exactly the same as it had been on the night when   Mr. Dursley had seen that fateful news report about the owls."
+Only the photographs on the mantelpiece really showed how much time had passed.
+"Ten years ago, there had been lots of pictures of what looked like a large pink beach ball wearing different- colored bonnets-- but    Dudley Dursley was no longer a baby, and now the photographs showed a large blond boy riding boy first bicycle, on a carousel at the fair, playing a computer game with boy father, being hugged and kissed by boy mother."
+"The room held no sign at all that another boy lived in the house, too."
+"""
+    remove_words_content = """words
+a
+about
+above
+actual
+after
+again
+against
+all
+alreadi
+also
+alway
+am
+amp
+an
+and
+ani
+anoth
+any
+anyth
+are
+around
+as
+at
+aww
+babi
+back
+be
+becaus
+because
+bed
+been
+befor
+before
+being
+below
+between
+birthday
+bit
+book
+both
+boy
+but
+by
+call
+can
+cannot
+cant
+car
+check
+com
+come
+could
+day
+did
+didn
+dinner
+do
+doe
+does
+doesn
+doing
+don
+done
+dont
+down
+during
+each
+eat
+end
+even
+ever
+everyon
+exam
+famili
+feel
+few
+final
+find
+first
+follow
+for
+found
+friday
+from
+further
+game
+get
+girl
+give
+gone
+gonna
+got
+gotta
+guess
+guy
+had
+hair
+happen
+has
+have
+haven
+having
+he
+head
+hear
+her
+here
+hers
+herself
+hey
+him
+himself
+his
+home
+hour
+hous
+how
+http
+i
+if
+im
+in
+into
+is
+isn
+it
+its
+itself
+job
+just
+keep
+know
+last
+later
+least
+leav
+let
+life
+listen
+littl
+live
+look
+lot
+lunch
+made
+make
+man
+mani
+may
+mayb
+me
+mean
+meet
+might
+mom
+monday
+month
+more
+morn
+most
+move
+movi
+much
+must
+my
+myself
+need
+never
+new
+night
+no
+nor
+not
+noth
+now
+of
+off
+on
+once
+one
+onli
+only
+or
+other
+ought
+our
+ours
+ourselves
+out
+over
+own
+peopl
+phone
+pic
+pictur
+play
+post
+put
+quot
+rain
+read
+readi
+realli
+run
+said
+same
+saw
+say
+school
+see
+seem
+she
+shop
+should
+show
+sinc
+sleep
+so
+some
+someon
+someth
+song
+soon
+sound
+start
+stay
+still
+studi
+stuff
+such
+summer
+sunday
+sure
+take
+talk
+tell
+than
+thank
+that
+the
+their
+theirs
+them
+themselves
+then
+there
+these
+they
+thing
+think
+this
+those
+though
+thought
+through
+time
+to
+today
+tomorrow
+tonight
+too
+total
+tri
+tweet
+twitpic
+twitter
+two
+u
+under
+until
+up
+updat
+use
+veri
+very
+video
+wait
+wanna
+want
+was
+watch
+way
+we
+weather
+week
+weekend
+went
+were
+what
+when
+where
+whi
+which
+while
+who
+whom
+why
+will
+with
+woke
+won
+work
+world
+would
+www
+yay
+yeah
+year
+yes
+yesterday
+yet
+you
+your
+yours
+yourself
+yourselves
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+k
+r
+s
+t
+u
+v
+w
+x
+u
+z
+mr
+miss
+mrs
+ms
+"""
+    output_content = """{
+    "Question 2": {
+        "3-Seq Counts": [
+            [
+                "1_seq",
+                [
+                    [
+                        "ago",
+                        1
+                    ],
+                    [
+                        "air",
+                        1
+                    ],
+                    [
+                        "almost",
+                        1
+                    ],
+                    [
+                        "another",
+                        1
+                    ],
+                    [
+                        "arm",
+                        1
+                    ],
+                    [
+                        "arms",
+                        1
+                    ],
+                    [
+                        "asked",
+                        1
+                    ],
+                    [
+                        "astonishing",
+                        1
+                    ],
+                    [
+                        "baby",
+                        1
+                    ],
+                    [
+                        "ball",
+                        1
+                    ],
+                    [
+                        "balls",
+                        2
+                    ],
+                    [
+                        "beach",
+                        1
+                    ],
+                    [
+                        "bent",
+                        1
+                    ],
+                    [
+                        "beside",
+                        1
+                    ],
+                    [
+                        "better",
+                        1
+                    ],
+                    [
+                        "bicycle",
+                        1
+                    ],
+                    [
+                        "bike",
+                        1
+                    ],
+                    [
+                        "black",
+                        1
+                    ],
+                    [
+                        "blankets",
+                        3
+                    ],
+                    [
+                        "blew",
+                        1
+                    ],
+                    [
+                        "blinked",
+                        1
+                    ],
+                    [
+                        "blond",
+                        1
+                    ],
+                    [
+                        "bolt",
+                        1
+                    ],
+                    [
+                        "bonnets",
+                        1
+                    ],
+                    [
+                        "bottles",
+                        1
+                    ],
+                    [
+                        "brass",
+                        1
+                    ],
+                    [
+                        "breeze",
+                        1
+                    ],
+                    [
+                        "bundle",
+                        2
+                    ],
+                    [
+                        "burying",
+                        1
+                    ],
+                    [
+                        "business",
+                        1
+                    ],
+                    [
+                        "bye",
+                        1
+                    ],
+                    [
+                        "came",
+                        1
+                    ],
+                    [
+                        "carousel",
+                        1
+                    ],
+                    [
+                        "cat",
+                        1
+                    ],
+                    [
+                        "celebrations",
+                        1
+                    ],
+                    [
+                        "changed",
+                        1
+                    ],
+                    [
+                        "clicked",
+                        1
+                    ],
+                    [
+                        "cloak",
+                        2
+                    ],
+                    [
+                        "closed",
+                        1
+                    ],
+                    [
+                        "colored",
+                        1
+                    ],
+                    [
+                        "computer",
+                        1
+                    ],
+                    [
+                        "corner",
+                        2
+                    ],
+                    [
+                        "couldn",
+                        2
+                    ],
+                    [
+                        "country",
+                        1
+                    ],
+                    [
+                        "cousin",
+                        1
+                    ],
+                    [
+                        "crept",
+                        1
+                    ],
+                    [
+                        "curiously",
+                        1
+                    ],
+                    [
+                        "cut",
+                        1
+                    ],
+                    [
+                        "dead",
+                        1
+                    ],
+                    [
+                        "different",
+                        1
+                    ],
+                    [
+                        "dog",
+                        1
+                    ],
+                    [
+                        "door",
+                        3
+                    ],
+                    [
+                        "doorstep",
+                        1
+                    ],
+                    [
+                        "drive",
+                        3
+                    ],
+                    [
+                        "dudley",
+                        7
+                    ],
+                    [
+                        "dumbledore",
+                        32
+                    ],
+                    [
+                        "dursley",
+                        19
+                    ],
+                    [
+                        "engine",
+                        2
+                    ],
+                    [
+                        "exactly",
+                        1
+                    ],
+                    [
+                        "expect",
+                        2
+                    ],
+                    [
+                        "eyes",
+                        2
+                    ],
+                    [
+                        "face",
+                        1
+                    ],
+                    [
+                        "fair",
+                        1
+                    ],
+                    [
+                        "famous",
+                        1
+                    ],
+                    [
+                        "fateful",
+                        1
+                    ],
+                    [
+                        "father",
+                        1
+                    ],
+                    [
+                        "finally",
+                        1
+                    ],
+                    [
+                        "forehead",
+                        1
+                    ],
+                    [
+                        "forever",
+                        1
+                    ],
+                    [
+                        "four",
+                        2
+                    ],
+                    [
+                        "front",
+                        5
+                    ],
+                    [
+                        "full",
+                        1
+                    ],
+                    [
+                        "furiously",
+                        1
+                    ],
+                    [
+                        "garden",
+                        1
+                    ],
+                    [
+                        "gardens",
+                        1
+                    ],
+                    [
+                        "gave",
+                        1
+                    ],
+                    [
+                        "gently",
+                        1
+                    ],
+                    [
+                        "gingerly",
+                        1
+                    ],
+                    [
+                        "glass",
+                        1
+                    ],
+                    [
+                        "glasses",
+                        1
+                    ],
+                    [
+                        "glowed",
+                        1
+                    ],
+                    [
+                        "go",
+                        1
+                    ],
+                    [
+                        "good",
+                        2
+                    ],
+                    [
+                        "great",
+                        1
+                    ],
+                    [
+                        "grip",
+                        1
+                    ],
+                    [
+                        "hagrid",
+                        11
+                    ],
+                    [
+                        "hand",
+                        1
+                    ],
+                    [
+                        "handkerchief",
+                        4
+                    ],
+                    [
+                        "handy",
+                        1
+                    ],
+                    [
+                        "hardly",
+                        1
+                    ],
+                    [
+                        "harry",
+                        12
+                    ],
+                    [
+                        "hedges",
+                        1
+                    ],
+                    [
+                        "heel",
+                        1
+                    ],
+                    [
+                        "held",
+                        1
+                    ],
+                    [
+                        "hissed",
+                        1
+                    ],
+                    [
+                        "holding",
+                        1
+                    ],
+                    [
+                        "hours",
+                        1
+                    ],
+                    [
+                        "house",
+                        2
+                    ],
+                    [
+                        "howl",
+                        1
+                    ],
+                    [
+                        "hugged",
+                        1
+                    ],
+                    [
+                        "hushed",
+                        1
+                    ],
+                    [
+                        "inky",
+                        1
+                    ],
+                    [
+                        "inside",
+                        2
+                    ],
+                    [
+                        "jacket",
+                        1
+                    ],
+                    [
+                        "james",
+                        1
+                    ],
+                    [
+                        "jet",
+                        1
+                    ],
+                    [
+                        "join",
+                        1
+                    ],
+                    [
+                        "kicked",
+                        1
+                    ],
+                    [
+                        "kiss",
+                        1
+                    ],
+                    [
+                        "kissed",
+                        1
+                    ],
+                    [
+                        "knee",
+                        1
+                    ],
+                    [
+                        "knowing",
+                        3
+                    ],
+                    [
+                        "laid",
+                        1
+                    ],
+                    [
+                        "lamps",
+                        1
+                    ],
+                    [
+                        "large",
+                        3
+                    ],
+                    [
+                        "lay",
+                        1
+                    ],
+                    [
+                        "left",
+                        1
+                    ],
+                    [
+                        "letter",
+                        3
+                    ],
+                    [
+                        "light",
+                        2
+                    ],
+                    [
+                        "lightning",
+                        1
+                    ],
+                    [
+                        "like",
+                        3
+                    ],
+                    [
+                        "lily",
+                        1
+                    ],
+                    [
+                        "lit",
+                        1
+                    ],
+                    [
+                        "little",
+                        2
+                    ],
+                    [
+                        "lived",
+                        2
+                    ],
+                    [
+                        "living",
+                        1
+                    ],
+                    [
+                        "ll",
+                        4
+                    ],
+                    [
+                        "london",
+                        1
+                    ],
+                    [
+                        "longer",
+                        1
+                    ],
+                    [
+                        "looked",
+                        2
+                    ],
+                    [
+                        "lots",
+                        1
+                    ],
+                    [
+                        "low",
+                        1
+                    ],
+                    [
+                        "luck",
+                        1
+                    ],
+                    [
+                        "mantelpiece",
+                        1
+                    ],
+                    [
+                        "map",
+                        1
+                    ],
+                    [
+                        "mcgonagall",
+                        9
+                    ],
+                    [
+                        "meeting",
+                        1
+                    ],
+                    [
+                        "milk",
+                        1
+                    ],
+                    [
+                        "minute",
+                        1
+                    ],
+                    [
+                        "moment",
+                        1
+                    ],
+                    [
+                        "mother",
+                        1
+                    ],
+                    [
+                        "motorcycle",
+                        1
+                    ],
+                    [
+                        "muffled",
+                        1
+                    ],
+                    [
+                        "muggles",
+                        2
+                    ],
+                    [
+                        "murmured",
+                        1
+                    ],
+                    [
+                        "nearly",
+                        1
+                    ],
+                    [
+                        "neat",
+                        1
+                    ],
+                    [
+                        "nephew",
+                        1
+                    ],
+                    [
+                        "news",
+                        1
+                    ],
+                    [
+                        "next",
+                        1
+                    ],
+                    [
+                        "nodding",
+                        1
+                    ],
+                    [
+                        "nose",
+                        1
+                    ],
+                    [
+                        "number",
+                        3
+                    ],
+                    [
+                        "onto",
+                        1
+                    ],
+                    [
+                        "opened",
+                        1
+                    ],
+                    [
+                        "orange",
+                        1
+                    ],
+                    [
+                        "outer",
+                        2
+                    ],
+                    [
+                        "owls",
+                        1
+                    ],
+                    [
+                        "passed",
+                        2
+                    ],
+                    [
+                        "patting",
+                        1
+                    ],
+                    [
+                        "people",
+                        2
+                    ],
+                    [
+                        "perfect",
+                        1
+                    ],
+                    [
+                        "photographs",
+                        2
+                    ],
+                    [
+                        "pictures",
+                        1
+                    ],
+                    [
+                        "pinched",
+                        1
+                    ],
+                    [
+                        "pink",
+                        1
+                    ],
+                    [
+                        "place",
+                        1
+                    ],
+                    [
+                        "playing",
+                        1
+                    ],
+                    [
+                        "poor",
+                        1
+                    ],
+                    [
+                        "potter",
+                        2
+                    ],
+                    [
+                        "privet",
+                        3
+                    ],
+                    [
+                        "prodded",
+                        1
+                    ],
+                    [
+                        "professor",
+                        8
+                    ],
+                    [
+                        "really",
+                        1
+                    ],
+                    [
+                        "reply",
+                        1
+                    ],
+                    [
+                        "report",
+                        1
+                    ],
+                    [
+                        "riding",
+                        1
+                    ],
+                    [
+                        "roar",
+                        1
+                    ],
+                    [
+                        "rolled",
+                        1
+                    ],
+                    [
+                        "room",
+                        2
+                    ],
+                    [
+                        "rose",
+                        2
+                    ],
+                    [
+                        "ruffled",
+                        1
+                    ],
+                    [
+                        "sad",
+                        1
+                    ],
+                    [
+                        "saying",
+                        1
+                    ],
+                    [
+                        "scar",
+                        2
+                    ],
+                    [
+                        "scars",
+                        1
+                    ],
+                    [
+                        "scratchy",
+                        1
+                    ],
+                    [
+                        "scream",
+                        1
+                    ],
+                    [
+                        "secret",
+                        1
+                    ],
+                    [
+                        "seemed",
+                        1
+                    ],
+                    [
+                        "seen",
+                        1
+                    ],
+                    [
+                        "shaggy",
+                        1
+                    ],
+                    [
+                        "shall",
+                        1
+                    ],
+                    [
+                        "shaped",
+                        1
+                    ],
+                    [
+                        "shhh",
+                        1
+                    ],
+                    [
+                        "shone",
+                        1
+                    ],
+                    [
+                        "shook",
+                        1
+                    ],
+                    [
+                        "shoulders",
+                        1
+                    ],
+                    [
+                        "showed",
+                        2
+                    ],
+                    [
+                        "sign",
+                        1
+                    ],
+                    [
+                        "silent",
+                        1
+                    ],
+                    [
+                        "silver",
+                        1
+                    ],
+                    [
+                        "since",
+                        1
+                    ],
+                    [
+                        "sir",
+                        2
+                    ],
+                    [
+                        "sirius",
+                        4
+                    ],
+                    [
+                        "sky",
+                        1
+                    ],
+                    [
+                        "sleeve",
+                        1
+                    ],
+                    [
+                        "slept",
+                        1
+                    ],
+                    [
+                        "slinking",
+                        1
+                    ],
+                    [
+                        "small",
+                        1
+                    ],
+                    [
+                        "sobbed",
+                        1
+                    ],
+                    [
+                        "something",
+                        1
+                    ],
+                    [
+                        "sorry",
+                        1
+                    ],
+                    [
+                        "special",
+                        1
+                    ],
+                    [
+                        "sped",
+                        1
+                    ],
+                    [
+                        "spend",
+                        1
+                    ],
+                    [
+                        "spotted",
+                        1
+                    ],
+                    [
+                        "stand",
+                        1
+                    ],
+                    [
+                        "staying",
+                        1
+                    ],
+                    [
+                        "step",
+                        2
+                    ],
+                    [
+                        "stepped",
+                        1
+                    ],
+                    [
+                        "stood",
+                        1
+                    ],
+                    [
+                        "stopped",
+                        1
+                    ],
+                    [
+                        "streaming",
+                        1
+                    ],
+                    [
+                        "street",
+                        3
+                    ],
+                    [
+                        "suddenly",
+                        2
+                    ],
+                    [
+                        "sun",
+                        1
+                    ],
+                    [
+                        "swish",
+                        1
+                    ],
+                    [
+                        "swung",
+                        1
+                    ],
+                    [
+                        "tabby",
+                        1
+                    ],
+                    [
+                        "takin",
+                        1
+                    ],
+                    [
+                        "taking",
+                        1
+                    ],
+                    [
+                        "ten",
+                        2
+                    ],
+                    [
+                        "ter",
+                        1
+                    ],
+                    [
+                        "things",
+                        1
+                    ],
+                    [
+                        "three",
+                        1
+                    ],
+                    [
+                        "tidy",
+                        2
+                    ],
+                    [
+                        "took",
+                        3
+                    ],
+                    [
+                        "toward",
+                        1
+                    ],
+                    [
+                        "tucked",
+                        1
+                    ],
+                    [
+                        "tuft",
+                        1
+                    ],
+                    [
+                        "turned",
+                        3
+                    ],
+                    [
+                        "twelve",
+                        1
+                    ],
+                    [
+                        "twinkling",
+                        1
+                    ],
+                    [
+                        "underground",
+                        1
+                    ],
+                    [
+                        "usually",
+                        1
+                    ],
+                    [
+                        "vanishing",
+                        1
+                    ],
+                    [
+                        "ve",
+                        1
+                    ],
+                    [
+                        "voice",
+                        2
+                    ],
+                    [
+                        "voices",
+                        1
+                    ],
+                    [
+                        "wake",
+                        1
+                    ],
+                    [
+                        "waking",
+                        1
+                    ],
+                    [
+                        "walked",
+                        2
+                    ],
+                    [
+                        "wall",
+                        1
+                    ],
+                    [
+                        "wearing",
+                        1
+                    ],
+                    [
+                        "weeks",
+                        1
+                    ],
+                    [
+                        "well",
+                        3
+                    ],
+                    [
+                        "whiskery",
+                        1
+                    ],
+                    [
+                        "whispered",
+                        2
+                    ],
+                    [
+                        "wiping",
+                        1
+                    ],
+                    [
+                        "without",
+                        1
+                    ],
+                    [
+                        "woken",
+                        2
+                    ],
+                    [
+                        "wouldn",
+                        1
+                    ],
+                    [
+                        "wounded",
+                        1
+                    ],
+                    [
+                        "years",
+                        2
+                    ]
+                ]
+            ],
+            [
+                "2_seq",
+                [
+                    [
+                        "ago lots",
+                        1
+                    ],
+                    [
+                        "almost exactly",
+                        1
+                    ],
+                    [
+                        "another lived",
+                        1
+                    ],
+                    [
+                        "arm dumbledore",
+                        1
+                    ],
+                    [
+                        "arms turned",
+                        1
+                    ],
+                    [
+                        "asked hagrid",
+                        1
+                    ],
+                    [
+                        "astonishing things",
+                        1
+                    ],
+                    [
+                        "baby photographs",
+                        1
+                    ],
+                    [
+                        "ball wearing",
+                        1
+                    ],
+                    [
+                        "balls light",
+                        1
+                    ],
+                    [
+                        "balls street",
+                        1
+                    ],
+                    [
+                        "beach ball",
+                        1
+                    ],
+                    [
+                        "bent harry",
+                        1
+                    ],
+                    [
+                        "beside dumbledore",
+                        1
+                    ],
+                    [
+                        "better dumbledore",
+                        1
+                    ],
+                    [
+                        "bicycle carousel",
+                        1
+                    ],
+                    [
+                        "bike professor",
+                        1
+                    ],
+                    [
+                        "black forehead",
+                        1
+                    ],
+                    [
+                        "blankets came",
+                        1
+                    ],
+                    [
+                        "blankets step",
+                        1
+                    ],
+                    [
+                        "blankets without",
+                        1
+                    ],
+                    [
+                        "blew mcgonagall",
+                        1
+                    ],
+                    [
+                        "blinked furiously",
+                        1
+                    ],
+                    [
+                        "blond riding",
+                        1
+                    ],
+                    [
+                        "bolt lightning",
+                        1
+                    ],
+                    [
+                        "bonnets dudley",
+                        1
+                    ],
+                    [
+                        "bottles dumbledore",
+                        1
+                    ],
+                    [
+                        "brass number",
+                        1
+                    ],
+                    [
+                        "breeze ruffled",
+                        1
+                    ],
+                    [
+                        "bundle blankets",
+                        1
+                    ],
+                    [
+                        "bundle hagrid",
+                        1
+                    ],
+                    [
+                        "burying hagrid",
+                        1
+                    ],
+                    [
+                        "business staying",
+                        1
+                    ],
+                    [
+                        "bye harry",
+                        1
+                    ],
+                    [
+                        "carousel fair",
+                        1
+                    ],
+                    [
+                        "cat slinking",
+                        1
+                    ],
+                    [
+                        "celebrations hagrid",
+                        1
+                    ],
+                    [
+                        "clicked outer",
+                        1
+                    ],
+                    [
+                        "cloak dumbledore",
+                        1
+                    ],
+                    [
+                        "cloak tucked",
+                        1
+                    ],
+                    [
+                        "closed letter",
+                        1
+                    ],
+                    [
+                        "colored bonnets",
+                        1
+                    ],
+                    [
+                        "computer father",
+                        1
+                    ],
+                    [
+                        "corner dumbledore",
+                        1
+                    ],
+                    [
+                        "corner street",
+                        1
+                    ],
+                    [
+                        "couldn moment",
+                        1
+                    ],
+                    [
+                        "couldn something",
+                        1
+                    ],
+                    [
+                        "country holding",
+                        1
+                    ],
+                    [
+                        "cousin dudley",
+                        1
+                    ],
+                    [
+                        "crept dursley",
+                        1
+                    ],
+                    [
+                        "curiously shaped",
+                        1
+                    ],
+                    [
+                        "cut like",
+                        1
+                    ],
+                    [
+                        "dead poor",
+                        1
+                    ],
+                    [
+                        "different colored",
+                        1
+                    ],
+                    [
+                        "door milk",
+                        1
+                    ],
+                    [
+                        "door number",
+                        1
+                    ],
+                    [
+                        "doorstep took",
+                        1
+                    ],
+                    [
+                        "drive glowed",
+                        1
+                    ],
+                    [
+                        "drive hardly",
+                        1
+                    ],
+                    [
+                        "drive lay",
+                        1
+                    ],
+                    [
+                        "dudley dumbledore",
+                        1
+                    ],
+                    [
+                        "dudley dursley",
+                        6
+                    ],
+                    [
+                        "dumbledore blankets",
+                        1
+                    ],
+                    [
+                        "dumbledore bundle",
+                        1
+                    ],
+                    [
+                        "dumbledore clicked",
+                        1
+                    ],
+                    [
+                        "dumbledore cloak",
+                        2
+                    ],
+                    [
+                        "dumbledore couldn",
+                        1
+                    ],
+                    [
+                        "dumbledore cousin",
+                        1
+                    ],
+                    [
+                        "dumbledore dumbledore",
+                        2
+                    ],
+                    [
+                        "dumbledore eyes",
+                        1
+                    ],
+                    [
+                        "dumbledore famous",
+                        1
+                    ],
+                    [
+                        "dumbledore finally",
+                        1
+                    ],
+                    [
+                        "dumbledore hagrid",
+                        1
+                    ],
+                    [
+                        "dumbledore heel",
+                        1
+                    ],
+                    [
+                        "dumbledore laid",
+                        1
+                    ],
+                    [
+                        "dumbledore ll",
+                        1
+                    ],
+                    [
+                        "dumbledore mcgonagall",
+                        1
+                    ],
+                    [
+                        "dumbledore murmured",
+                        1
+                    ],
+                    [
+                        "dumbledore nodding",
+                        1
+                    ],
+                    [
+                        "dumbledore sir",
+                        1
+                    ],
+                    [
+                        "dumbledore slept",
+                        1
+                    ],
+                    [
+                        "dumbledore special",
+                        1
+                    ],
+                    [
+                        "dumbledore spend",
+                        1
+                    ],
+                    [
+                        "dumbledore stepped",
+                        1
+                    ],
+                    [
+                        "dumbledore stopped",
+                        1
+                    ],
+                    [
+                        "dumbledore tabby",
+                        1
+                    ],
+                    [
+                        "dumbledore took",
+                        1
+                    ],
+                    [
+                        "dumbledore turned",
+                        2
+                    ],
+                    [
+                        "dumbledore woken",
+                        1
+                    ],
+                    [
+                        "dumbledore wouldn",
+                        1
+                    ],
+                    [
+                        "dursley dudley",
+                        5
+                    ],
+                    [
+                        "dursley dursley",
+                        5
+                    ],
+                    [
+                        "dursley front",
+                        1
+                    ],
+                    [
+                        "dursley house",
+                        1
+                    ],
+                    [
+                        "dursley living",
+                        1
+                    ],
+                    [
+                        "dursley longer",
+                        1
+                    ],
+                    [
+                        "dursley nephew",
+                        1
+                    ],
+                    [
+                        "dursley opened",
+                        1
+                    ],
+                    [
+                        "dursley scream",
+                        1
+                    ],
+                    [
+                        "dursley seen",
+                        1
+                    ],
+                    [
+                        "dursley woken",
+                        1
+                    ],
+                    [
+                        "engine roar",
+                        1
+                    ],
+                    [
+                        "engine rose",
+                        1
+                    ],
+                    [
+                        "exactly dursley",
+                        1
+                    ],
+                    [
+                        "expect astonishing",
+                        1
+                    ],
+                    [
+                        "expect professor",
+                        1
+                    ],
+                    [
+                        "eyes seemed",
+                        1
+                    ],
+                    [
+                        "eyes sirius",
+                        1
+                    ],
+                    [
+                        "face handkerchief",
+                        1
+                    ],
+                    [
+                        "fair playing",
+                        1
+                    ],
+                    [
+                        "famous knowing",
+                        1
+                    ],
+                    [
+                        "fateful news",
+                        1
+                    ],
+                    [
+                        "father hugged",
+                        1
+                    ],
+                    [
+                        "forehead dumbledore",
+                        1
+                    ],
+                    [
+                        "forever couldn",
+                        1
+                    ],
+                    [
+                        "four dursley",
+                        1
+                    ],
+                    [
+                        "front door",
+                        3
+                    ],
+                    [
+                        "front gardens",
+                        1
+                    ],
+                    [
+                        "front step",
+                        1
+                    ],
+                    [
+                        "full minute",
+                        1
+                    ],
+                    [
+                        "furiously twinkling",
+                        1
+                    ],
+                    [
+                        "garden wall",
+                        1
+                    ],
+                    [
+                        "gardens lit",
+                        1
+                    ],
+                    [
+                        "gave scratchy",
+                        1
+                    ],
+                    [
+                        "gently doorstep",
+                        1
+                    ],
+                    [
+                        "gingerly arm",
+                        1
+                    ],
+                    [
+                        "glass nearly",
+                        1
+                    ],
+                    [
+                        "glasses saying",
+                        1
+                    ],
+                    [
+                        "glowed suddenly",
+                        1
+                    ],
+                    [
+                        "go join",
+                        1
+                    ],
+                    [
+                        "good bye",
+                        1
+                    ],
+                    [
+                        "good luck",
+                        1
+                    ],
+                    [
+                        "great shaggy",
+                        1
+                    ],
+                    [
+                        "grip hagrid",
+                        1
+                    ],
+                    [
+                        "hagrid better",
+                        1
+                    ],
+                    [
+                        "hagrid face",
+                        1
+                    ],
+                    [
+                        "hagrid gingerly",
+                        1
+                    ],
+                    [
+                        "hagrid howl",
+                        1
+                    ],
+                    [
+                        "hagrid ll",
+                        1
+                    ],
+                    [
+                        "hagrid muffled",
+                        1
+                    ],
+                    [
+                        "hagrid onto",
+                        1
+                    ],
+                    [
+                        "hagrid shoulders",
+                        1
+                    ],
+                    [
+                        "hagrid swung",
+                        1
+                    ],
+                    [
+                        "hagrid taking",
+                        1
+                    ],
+                    [
+                        "hand closed",
+                        1
+                    ],
+                    [
+                        "handkerchief burying",
+                        1
+                    ],
+                    [
+                        "handkerchief lily",
+                        1
+                    ],
+                    [
+                        "handkerchief sad",
+                        1
+                    ],
+                    [
+                        "handkerchief stand",
+                        1
+                    ],
+                    [
+                        "hardly changed",
+                        1
+                    ],
+                    [
+                        "harry arms",
+                        1
+                    ],
+                    [
+                        "harry bent",
+                        1
+                    ],
+                    [
+                        "harry blankets",
+                        1
+                    ],
+                    [
+                        "harry dumbledore",
+                        1
+                    ],
+                    [
+                        "harry gave",
+                        1
+                    ],
+                    [
+                        "harry gently",
+                        1
+                    ],
+                    [
+                        "harry great",
+                        1
+                    ],
+                    [
+                        "harry harry",
+                        1
+                    ],
+                    [
+                        "harry potter",
+                        2
+                    ],
+                    [
+                        "harry sir",
+                        1
+                    ],
+                    [
+                        "harry ter",
+                        1
+                    ],
+                    [
+                        "hedges privet",
+                        1
+                    ],
+                    [
+                        "heel swish",
+                        1
+                    ],
+                    [
+                        "held sign",
+                        1
+                    ],
+                    [
+                        "hissed professor",
+                        1
+                    ],
+                    [
+                        "holding people",
+                        1
+                    ],
+                    [
+                        "hours dursley",
+                        1
+                    ],
+                    [
+                        "howl like",
+                        1
+                    ],
+                    [
+                        "hugged kissed",
+                        1
+                    ],
+                    [
+                        "hushed voices",
+                        1
+                    ],
+                    [
+                        "inky sky",
+                        1
+                    ],
+                    [
+                        "inside dumbledore",
+                        1
+                    ],
+                    [
+                        "inside harry",
+                        1
+                    ],
+                    [
+                        "jacket sleeve",
+                        1
+                    ],
+                    [
+                        "james dead",
+                        1
+                    ],
+                    [
+                        "jet black",
+                        1
+                    ],
+                    [
+                        "join celebrations",
+                        1
+                    ],
+                    [
+                        "kicked engine",
+                        1
+                    ],
+                    [
+                        "kissed mother",
+                        1
+                    ],
+                    [
+                        "knee perfect",
+                        1
+                    ],
+                    [
+                        "knowing dumbledore",
+                        3
+                    ],
+                    [
+                        "laid harry",
+                        1
+                    ],
+                    [
+                        "lamps privet",
+                        1
+                    ],
+                    [
+                        "large blond",
+                        1
+                    ],
+                    [
+                        "large pink",
+                        1
+                    ],
+                    [
+                        "large spotted",
+                        1
+                    ],
+                    [
+                        "lay silent",
+                        1
+                    ],
+                    [
+                        "left knee",
+                        1
+                    ],
+                    [
+                        "letter beside",
+                        1
+                    ],
+                    [
+                        "letter dumbledore",
+                        1
+                    ],
+                    [
+                        "letter inside",
+                        1
+                    ],
+                    [
+                        "light sped",
+                        1
+                    ],
+                    [
+                        "light usually",
+                        1
+                    ],
+                    [
+                        "like bolt",
+                        1
+                    ],
+                    [
+                        "like large",
+                        1
+                    ],
+                    [
+                        "like wounded",
+                        1
+                    ],
+                    [
+                        "lily james",
+                        1
+                    ],
+                    [
+                        "lit brass",
+                        1
+                    ],
+                    [
+                        "little bundle",
+                        1
+                    ],
+                    [
+                        "little harry",
+                        1
+                    ],
+                    [
+                        "lived house",
+                        1
+                    ],
+                    [
+                        "living room",
+                        1
+                    ],
+                    [
+                        "ll professor",
+                        1
+                    ],
+                    [
+                        "ll scar",
+                        1
+                    ],
+                    [
+                        "ll takin",
+                        1
+                    ],
+                    [
+                        "ll wake",
+                        1
+                    ],
+                    [
+                        "london underground",
+                        1
+                    ],
+                    [
+                        "longer baby",
+                        1
+                    ],
+                    [
+                        "looked like",
+                        1
+                    ],
+                    [
+                        "looked little",
+                        1
+                    ],
+                    [
+                        "lots pictures",
+                        1
+                    ],
+                    [
+                        "low garden",
+                        1
+                    ],
+                    [
+                        "luck harry",
+                        1
+                    ],
+                    [
+                        "mantelpiece really",
+                        1
+                    ],
+                    [
+                        "map london",
+                        1
+                    ],
+                    [
+                        "mcgonagall blew",
+                        1
+                    ],
+                    [
+                        "mcgonagall blinked",
+                        1
+                    ],
+                    [
+                        "mcgonagall curiously",
+                        1
+                    ],
+                    [
+                        "mcgonagall dumbledore",
+                        1
+                    ],
+                    [
+                        "mcgonagall ll",
+                        1
+                    ],
+                    [
+                        "mcgonagall nose",
+                        1
+                    ],
+                    [
+                        "mcgonagall professor",
+                        1
+                    ],
+                    [
+                        "mcgonagall whispered",
+                        1
+                    ],
+                    [
+                        "meeting secret",
+                        1
+                    ],
+                    [
+                        "milk bottles",
+                        1
+                    ],
+                    [
+                        "minute three",
+                        1
+                    ],
+                    [
+                        "moment people",
+                        1
+                    ],
+                    [
+                        "motorcycle kicked",
+                        1
+                    ],
+                    [
+                        "muffled voice",
+                        1
+                    ],
+                    [
+                        "muggles handkerchief",
+                        1
+                    ],
+                    [
+                        "muggles sorry",
+                        1
+                    ],
+                    [
+                        "nearly ten",
+                        1
+                    ],
+                    [
+                        "neat hedges",
+                        1
+                    ],
+                    [
+                        "nephew front",
+                        1
+                    ],
+                    [
+                        "news report",
+                        1
+                    ],
+                    [
+                        "next weeks",
+                        1
+                    ],
+                    [
+                        "nodding voice",
+                        1
+                    ],
+                    [
+                        "nose reply",
+                        1
+                    ],
+                    [
+                        "number crept",
+                        1
+                    ],
+                    [
+                        "number four",
+                        2
+                    ],
+                    [
+                        "onto motorcycle",
+                        1
+                    ],
+                    [
+                        "opened front",
+                        1
+                    ],
+                    [
+                        "orange dumbledore",
+                        1
+                    ],
+                    [
+                        "outer twelve",
+                        1
+                    ],
+                    [
+                        "passed since",
+                        1
+                    ],
+                    [
+                        "patting hagrid",
+                        1
+                    ],
+                    [
+                        "people glasses",
+                        1
+                    ],
+                    [
+                        "people meeting",
+                        1
+                    ],
+                    [
+                        "perfect map",
+                        1
+                    ],
+                    [
+                        "photographs mantelpiece",
+                        1
+                    ],
+                    [
+                        "photographs showed",
+                        1
+                    ],
+                    [
+                        "pictures looked",
+                        1
+                    ],
+                    [
+                        "pinched dumbledore",
+                        1
+                    ],
+                    [
+                        "pink beach",
+                        1
+                    ],
+                    [
+                        "place expect",
+                        1
+                    ],
+                    [
+                        "playing computer",
+                        1
+                    ],
+                    [
+                        "poor little",
+                        1
+                    ],
+                    [
+                        "potter lived",
+                        1
+                    ],
+                    [
+                        "potter rolled",
+                        1
+                    ],
+                    [
+                        "privet drive",
+                        3
+                    ],
+                    [
+                        "prodded pinched",
+                        1
+                    ],
+                    [
+                        "professor dumbledore",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall",
+                        7
+                    ],
+                    [
+                        "really showed",
+                        1
+                    ],
+                    [
+                        "report owls",
+                        1
+                    ],
+                    [
+                        "riding bicycle",
+                        1
+                    ],
+                    [
+                        "roar engine",
+                        1
+                    ],
+                    [
+                        "rolled inside",
+                        1
+                    ],
+                    [
+                        "room almost",
+                        1
+                    ],
+                    [
+                        "room held",
+                        1
+                    ],
+                    [
+                        "rose air",
+                        1
+                    ],
+                    [
+                        "rose tidy",
+                        1
+                    ],
+                    [
+                        "ruffled neat",
+                        1
+                    ],
+                    [
+                        "sad grip",
+                        1
+                    ],
+                    [
+                        "saying hushed",
+                        1
+                    ],
+                    [
+                        "scar dumbledore",
+                        1
+                    ],
+                    [
+                        "scar forever",
+                        1
+                    ],
+                    [
+                        "scars handy",
+                        1
+                    ],
+                    [
+                        "scratchy whiskery",
+                        1
+                    ],
+                    [
+                        "scream dursley",
+                        1
+                    ],
+                    [
+                        "secret country",
+                        1
+                    ],
+                    [
+                        "seen fateful",
+                        1
+                    ],
+                    [
+                        "shaggy harry",
+                        1
+                    ],
+                    [
+                        "shall expect",
+                        1
+                    ],
+                    [
+                        "shaped cut",
+                        1
+                    ],
+                    [
+                        "shhh hissed",
+                        1
+                    ],
+                    [
+                        "shone dumbledore",
+                        1
+                    ],
+                    [
+                        "shook professor",
+                        1
+                    ],
+                    [
+                        "shoulders shook",
+                        1
+                    ],
+                    [
+                        "showed large",
+                        1
+                    ],
+                    [
+                        "showed passed",
+                        1
+                    ],
+                    [
+                        "sign another",
+                        1
+                    ],
+                    [
+                        "silent tidy",
+                        1
+                    ],
+                    [
+                        "silver outer",
+                        1
+                    ],
+                    [
+                        "since dursley",
+                        1
+                    ],
+                    [
+                        "sir asked",
+                        1
+                    ],
+                    [
+                        "sir wiping",
+                        1
+                    ],
+                    [
+                        "sirius bike",
+                        1
+                    ],
+                    [
+                        "sirius jacket",
+                        1
+                    ],
+                    [
+                        "sirius sirius",
+                        1
+                    ],
+                    [
+                        "sirius streaming",
+                        1
+                    ],
+                    [
+                        "sky place",
+                        1
+                    ],
+                    [
+                        "sleeve hagrid",
+                        1
+                    ],
+                    [
+                        "slept knowing",
+                        1
+                    ],
+                    [
+                        "slinking corner",
+                        1
+                    ],
+                    [
+                        "small hand",
+                        1
+                    ],
+                    [
+                        "sobbed hagrid",
+                        1
+                    ],
+                    [
+                        "something scar",
+                        1
+                    ],
+                    [
+                        "sorry sobbed",
+                        1
+                    ],
+                    [
+                        "special knowing",
+                        1
+                    ],
+                    [
+                        "sped balls",
+                        1
+                    ],
+                    [
+                        "spend next",
+                        1
+                    ],
+                    [
+                        "spotted handkerchief",
+                        1
+                    ],
+                    [
+                        "stand handkerchief",
+                        1
+                    ],
+                    [
+                        "step number",
+                        1
+                    ],
+                    [
+                        "step privet",
+                        1
+                    ],
+                    [
+                        "stepped low",
+                        1
+                    ],
+                    [
+                        "stood looked",
+                        1
+                    ],
+                    [
+                        "stopped took",
+                        1
+                    ],
+                    [
+                        "streaming eyes",
+                        1
+                    ],
+                    [
+                        "street lamps",
+                        1
+                    ],
+                    [
+                        "suddenly hagrid",
+                        1
+                    ],
+                    [
+                        "suddenly orange",
+                        1
+                    ],
+                    [
+                        "sun rose",
+                        1
+                    ],
+                    [
+                        "swish dumbledore",
+                        1
+                    ],
+                    [
+                        "swung hagrid",
+                        1
+                    ],
+                    [
+                        "tabby cat",
+                        1
+                    ],
+                    [
+                        "takin sirius",
+                        1
+                    ],
+                    [
+                        "taking large",
+                        1
+                    ],
+                    [
+                        "ten years",
+                        2
+                    ],
+                    [
+                        "ter muggles",
+                        1
+                    ],
+                    [
+                        "three stood",
+                        1
+                    ],
+                    [
+                        "tidy front",
+                        1
+                    ],
+                    [
+                        "tidy inky",
+                        1
+                    ],
+                    [
+                        "took harry",
+                        1
+                    ],
+                    [
+                        "took letter",
+                        1
+                    ],
+                    [
+                        "took silver",
+                        1
+                    ],
+                    [
+                        "toward dursley",
+                        1
+                    ],
+                    [
+                        "tucked letter",
+                        1
+                    ],
+                    [
+                        "tuft jet",
+                        1
+                    ],
+                    [
+                        "turned dumbledore",
+                        1
+                    ],
+                    [
+                        "turned toward",
+                        1
+                    ],
+                    [
+                        "turned walked",
+                        1
+                    ],
+                    [
+                        "twelve balls",
+                        1
+                    ],
+                    [
+                        "twinkling light",
+                        1
+                    ],
+                    [
+                        "usually shone",
+                        1
+                    ],
+                    [
+                        "vanishing glass",
+                        1
+                    ],
+                    [
+                        "ve business",
+                        1
+                    ],
+                    [
+                        "voice ll",
+                        1
+                    ],
+                    [
+                        "voices harry",
+                        1
+                    ],
+                    [
+                        "wake muggles",
+                        1
+                    ],
+                    [
+                        "walked front",
+                        1
+                    ],
+                    [
+                        "walked street",
+                        1
+                    ],
+                    [
+                        "wall walked",
+                        1
+                    ],
+                    [
+                        "wearing different",
+                        1
+                    ],
+                    [
+                        "weeks prodded",
+                        1
+                    ],
+                    [
+                        "well dumbledore",
+                        2
+                    ],
+                    [
+                        "well go",
+                        1
+                    ],
+                    [
+                        "whiskery kiss",
+                        1
+                    ],
+                    [
+                        "whispered patting",
+                        1
+                    ],
+                    [
+                        "whispered professor",
+                        1
+                    ],
+                    [
+                        "wiping sirius",
+                        1
+                    ],
+                    [
+                        "without waking",
+                        1
+                    ],
+                    [
+                        "woken dursley",
+                        1
+                    ],
+                    [
+                        "woken hours",
+                        1
+                    ],
+                    [
+                        "wounded dog",
+                        1
+                    ],
+                    [
+                        "years ago",
+                        1
+                    ],
+                    [
+                        "years passed",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "3_seq",
+                [
+                    [
+                        "ago lots pictures",
+                        1
+                    ],
+                    [
+                        "almost exactly dursley",
+                        1
+                    ],
+                    [
+                        "another lived house",
+                        1
+                    ],
+                    [
+                        "arm dumbledore stepped",
+                        1
+                    ],
+                    [
+                        "arms turned toward",
+                        1
+                    ],
+                    [
+                        "baby photographs showed",
+                        1
+                    ],
+                    [
+                        "ball wearing different",
+                        1
+                    ],
+                    [
+                        "balls light sped",
+                        1
+                    ],
+                    [
+                        "balls street lamps",
+                        1
+                    ],
+                    [
+                        "beach ball wearing",
+                        1
+                    ],
+                    [
+                        "bent harry great",
+                        1
+                    ],
+                    [
+                        "beside dumbledore dumbledore",
+                        1
+                    ],
+                    [
+                        "better dumbledore took",
+                        1
+                    ],
+                    [
+                        "bicycle carousel fair",
+                        1
+                    ],
+                    [
+                        "bike professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "black forehead dumbledore",
+                        1
+                    ],
+                    [
+                        "blankets step number",
+                        1
+                    ],
+                    [
+                        "blankets without waking",
+                        1
+                    ],
+                    [
+                        "blew mcgonagall nose",
+                        1
+                    ],
+                    [
+                        "blinked furiously twinkling",
+                        1
+                    ],
+                    [
+                        "blond riding bicycle",
+                        1
+                    ],
+                    [
+                        "bonnets dudley dursley",
+                        1
+                    ],
+                    [
+                        "bottles dumbledore spend",
+                        1
+                    ],
+                    [
+                        "brass number four",
+                        1
+                    ],
+                    [
+                        "breeze ruffled neat",
+                        1
+                    ],
+                    [
+                        "bundle blankets step",
+                        1
+                    ],
+                    [
+                        "bundle hagrid shoulders",
+                        1
+                    ],
+                    [
+                        "burying hagrid face",
+                        1
+                    ],
+                    [
+                        "bye harry sir",
+                        1
+                    ],
+                    [
+                        "carousel fair playing",
+                        1
+                    ],
+                    [
+                        "cat slinking corner",
+                        1
+                    ],
+                    [
+                        "celebrations hagrid muffled",
+                        1
+                    ],
+                    [
+                        "clicked outer twelve",
+                        1
+                    ],
+                    [
+                        "cloak tucked letter",
+                        1
+                    ],
+                    [
+                        "closed letter beside",
+                        1
+                    ],
+                    [
+                        "colored bonnets dudley",
+                        1
+                    ],
+                    [
+                        "computer father hugged",
+                        1
+                    ],
+                    [
+                        "corner dumbledore stopped",
+                        1
+                    ],
+                    [
+                        "couldn moment people",
+                        1
+                    ],
+                    [
+                        "couldn something scar",
+                        1
+                    ],
+                    [
+                        "country holding people",
+                        1
+                    ],
+                    [
+                        "cousin dudley dumbledore",
+                        1
+                    ],
+                    [
+                        "crept dursley dursley",
+                        1
+                    ],
+                    [
+                        "curiously shaped cut",
+                        1
+                    ],
+                    [
+                        "cut like bolt",
+                        1
+                    ],
+                    [
+                        "dead poor little",
+                        1
+                    ],
+                    [
+                        "different colored bonnets",
+                        1
+                    ],
+                    [
+                        "door milk bottles",
+                        1
+                    ],
+                    [
+                        "door number crept",
+                        1
+                    ],
+                    [
+                        "doorstep took letter",
+                        1
+                    ],
+                    [
+                        "drive glowed suddenly",
+                        1
+                    ],
+                    [
+                        "drive hardly changed",
+                        1
+                    ],
+                    [
+                        "drive lay silent",
+                        1
+                    ],
+                    [
+                        "dudley dumbledore couldn",
+                        1
+                    ],
+                    [
+                        "dudley dursley front",
+                        1
+                    ],
+                    [
+                        "dudley dursley house",
+                        1
+                    ],
+                    [
+                        "dudley dursley living",
+                        1
+                    ],
+                    [
+                        "dudley dursley longer",
+                        1
+                    ],
+                    [
+                        "dudley dursley nephew",
+                        1
+                    ],
+                    [
+                        "dudley dursley woken",
+                        1
+                    ],
+                    [
+                        "dumbledore blankets without",
+                        1
+                    ],
+                    [
+                        "dumbledore bundle blankets",
+                        1
+                    ],
+                    [
+                        "dumbledore clicked outer",
+                        1
+                    ],
+                    [
+                        "dumbledore cloak dumbledore",
+                        1
+                    ],
+                    [
+                        "dumbledore cloak tucked",
+                        1
+                    ],
+                    [
+                        "dumbledore couldn moment",
+                        1
+                    ],
+                    [
+                        "dumbledore cousin dudley",
+                        1
+                    ],
+                    [
+                        "dumbledore dumbledore ll",
+                        1
+                    ],
+                    [
+                        "dumbledore dumbledore slept",
+                        1
+                    ],
+                    [
+                        "dumbledore eyes seemed",
+                        1
+                    ],
+                    [
+                        "dumbledore famous knowing",
+                        1
+                    ],
+                    [
+                        "dumbledore hagrid better",
+                        1
+                    ],
+                    [
+                        "dumbledore heel swish",
+                        1
+                    ],
+                    [
+                        "dumbledore laid harry",
+                        1
+                    ],
+                    [
+                        "dumbledore ll scar",
+                        1
+                    ],
+                    [
+                        "dumbledore mcgonagall curiously",
+                        1
+                    ],
+                    [
+                        "dumbledore nodding voice",
+                        1
+                    ],
+                    [
+                        "dumbledore sir wiping",
+                        1
+                    ],
+                    [
+                        "dumbledore slept knowing",
+                        1
+                    ],
+                    [
+                        "dumbledore special knowing",
+                        1
+                    ],
+                    [
+                        "dumbledore spend next",
+                        1
+                    ],
+                    [
+                        "dumbledore stepped low",
+                        1
+                    ],
+                    [
+                        "dumbledore stopped took",
+                        1
+                    ],
+                    [
+                        "dumbledore tabby cat",
+                        1
+                    ],
+                    [
+                        "dumbledore took harry",
+                        1
+                    ],
+                    [
+                        "dumbledore turned dumbledore",
+                        1
+                    ],
+                    [
+                        "dumbledore turned walked",
+                        1
+                    ],
+                    [
+                        "dumbledore woken hours",
+                        1
+                    ],
+                    [
+                        "dursley dudley dursley",
+                        5
+                    ],
+                    [
+                        "dursley dursley dudley",
+                        5
+                    ],
+                    [
+                        "dursley front door",
+                        1
+                    ],
+                    [
+                        "dursley living room",
+                        1
+                    ],
+                    [
+                        "dursley longer baby",
+                        1
+                    ],
+                    [
+                        "dursley nephew front",
+                        1
+                    ],
+                    [
+                        "dursley opened front",
+                        1
+                    ],
+                    [
+                        "dursley scream dursley",
+                        1
+                    ],
+                    [
+                        "dursley seen fateful",
+                        1
+                    ],
+                    [
+                        "dursley woken dursley",
+                        1
+                    ],
+                    [
+                        "engine roar engine",
+                        1
+                    ],
+                    [
+                        "engine rose air",
+                        1
+                    ],
+                    [
+                        "exactly dursley seen",
+                        1
+                    ],
+                    [
+                        "expect astonishing things",
+                        1
+                    ],
+                    [
+                        "expect professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "eyes sirius jacket",
+                        1
+                    ],
+                    [
+                        "face handkerchief stand",
+                        1
+                    ],
+                    [
+                        "fair playing computer",
+                        1
+                    ],
+                    [
+                        "famous knowing dumbledore",
+                        1
+                    ],
+                    [
+                        "fateful news report",
+                        1
+                    ],
+                    [
+                        "father hugged kissed",
+                        1
+                    ],
+                    [
+                        "forehead dumbledore mcgonagall",
+                        1
+                    ],
+                    [
+                        "forever couldn something",
+                        1
+                    ],
+                    [
+                        "four dursley dursley",
+                        1
+                    ],
+                    [
+                        "front door milk",
+                        1
+                    ],
+                    [
+                        "front door number",
+                        1
+                    ],
+                    [
+                        "front gardens lit",
+                        1
+                    ],
+                    [
+                        "front step privet",
+                        1
+                    ],
+                    [
+                        "full minute three",
+                        1
+                    ],
+                    [
+                        "furiously twinkling light",
+                        1
+                    ],
+                    [
+                        "garden wall walked",
+                        1
+                    ],
+                    [
+                        "gardens lit brass",
+                        1
+                    ],
+                    [
+                        "gave scratchy whiskery",
+                        1
+                    ],
+                    [
+                        "gently doorstep took",
+                        1
+                    ],
+                    [
+                        "gingerly arm dumbledore",
+                        1
+                    ],
+                    [
+                        "glass nearly ten",
+                        1
+                    ],
+                    [
+                        "glasses saying hushed",
+                        1
+                    ],
+                    [
+                        "glowed suddenly orange",
+                        1
+                    ],
+                    [
+                        "go join celebrations",
+                        1
+                    ],
+                    [
+                        "good bye harry",
+                        1
+                    ],
+                    [
+                        "good luck harry",
+                        1
+                    ],
+                    [
+                        "great shaggy harry",
+                        1
+                    ],
+                    [
+                        "grip hagrid ll",
+                        1
+                    ],
+                    [
+                        "hagrid better dumbledore",
+                        1
+                    ],
+                    [
+                        "hagrid face handkerchief",
+                        1
+                    ],
+                    [
+                        "hagrid gingerly arm",
+                        1
+                    ],
+                    [
+                        "hagrid howl like",
+                        1
+                    ],
+                    [
+                        "hagrid ll professor",
+                        1
+                    ],
+                    [
+                        "hagrid muffled voice",
+                        1
+                    ],
+                    [
+                        "hagrid onto motorcycle",
+                        1
+                    ],
+                    [
+                        "hagrid shoulders shook",
+                        1
+                    ],
+                    [
+                        "hagrid swung hagrid",
+                        1
+                    ],
+                    [
+                        "hagrid taking large",
+                        1
+                    ],
+                    [
+                        "hand closed letter",
+                        1
+                    ],
+                    [
+                        "handkerchief burying hagrid",
+                        1
+                    ],
+                    [
+                        "handkerchief lily james",
+                        1
+                    ],
+                    [
+                        "handkerchief sad grip",
+                        1
+                    ],
+                    [
+                        "handkerchief stand handkerchief",
+                        1
+                    ],
+                    [
+                        "harry arms turned",
+                        1
+                    ],
+                    [
+                        "harry bent harry",
+                        1
+                    ],
+                    [
+                        "harry blankets came",
+                        1
+                    ],
+                    [
+                        "harry dumbledore murmured",
+                        1
+                    ],
+                    [
+                        "harry gave scratchy",
+                        1
+                    ],
+                    [
+                        "harry gently doorstep",
+                        1
+                    ],
+                    [
+                        "harry great shaggy",
+                        1
+                    ],
+                    [
+                        "harry harry arms",
+                        1
+                    ],
+                    [
+                        "harry potter lived",
+                        1
+                    ],
+                    [
+                        "harry potter rolled",
+                        1
+                    ],
+                    [
+                        "harry sir asked",
+                        1
+                    ],
+                    [
+                        "harry ter muggles",
+                        1
+                    ],
+                    [
+                        "hedges privet drive",
+                        1
+                    ],
+                    [
+                        "heel swish dumbledore",
+                        1
+                    ],
+                    [
+                        "held sign another",
+                        1
+                    ],
+                    [
+                        "hissed professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "holding people glasses",
+                        1
+                    ],
+                    [
+                        "hours dursley scream",
+                        1
+                    ],
+                    [
+                        "howl like wounded",
+                        1
+                    ],
+                    [
+                        "hugged kissed mother",
+                        1
+                    ],
+                    [
+                        "hushed voices harry",
+                        1
+                    ],
+                    [
+                        "inky sky place",
+                        1
+                    ],
+                    [
+                        "inside dumbledore blankets",
+                        1
+                    ],
+                    [
+                        "inside harry blankets",
+                        1
+                    ],
+                    [
+                        "jacket sleeve hagrid",
+                        1
+                    ],
+                    [
+                        "james dead poor",
+                        1
+                    ],
+                    [
+                        "jet black forehead",
+                        1
+                    ],
+                    [
+                        "join celebrations hagrid",
+                        1
+                    ],
+                    [
+                        "kicked engine roar",
+                        1
+                    ],
+                    [
+                        "knee perfect map",
+                        1
+                    ],
+                    [
+                        "knowing dumbledore famous",
+                        1
+                    ],
+                    [
+                        "knowing dumbledore special",
+                        1
+                    ],
+                    [
+                        "knowing dumbledore woken",
+                        1
+                    ],
+                    [
+                        "laid harry gently",
+                        1
+                    ],
+                    [
+                        "lamps privet drive",
+                        1
+                    ],
+                    [
+                        "large blond riding",
+                        1
+                    ],
+                    [
+                        "large pink beach",
+                        1
+                    ],
+                    [
+                        "large spotted handkerchief",
+                        1
+                    ],
+                    [
+                        "lay silent tidy",
+                        1
+                    ],
+                    [
+                        "left knee perfect",
+                        1
+                    ],
+                    [
+                        "letter beside dumbledore",
+                        1
+                    ],
+                    [
+                        "letter dumbledore cloak",
+                        1
+                    ],
+                    [
+                        "letter inside harry",
+                        1
+                    ],
+                    [
+                        "light sped balls",
+                        1
+                    ],
+                    [
+                        "light usually shone",
+                        1
+                    ],
+                    [
+                        "like bolt lightning",
+                        1
+                    ],
+                    [
+                        "like large pink",
+                        1
+                    ],
+                    [
+                        "like wounded dog",
+                        1
+                    ],
+                    [
+                        "lily james dead",
+                        1
+                    ],
+                    [
+                        "lit brass number",
+                        1
+                    ],
+                    [
+                        "little bundle hagrid",
+                        1
+                    ],
+                    [
+                        "little harry ter",
+                        1
+                    ],
+                    [
+                        "living room almost",
+                        1
+                    ],
+                    [
+                        "ll professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "ll scar forever",
+                        1
+                    ],
+                    [
+                        "ll takin sirius",
+                        1
+                    ],
+                    [
+                        "ll wake muggles",
+                        1
+                    ],
+                    [
+                        "longer baby photographs",
+                        1
+                    ],
+                    [
+                        "looked like large",
+                        1
+                    ],
+                    [
+                        "looked little bundle",
+                        1
+                    ],
+                    [
+                        "lots pictures looked",
+                        1
+                    ],
+                    [
+                        "low garden wall",
+                        1
+                    ],
+                    [
+                        "luck harry dumbledore",
+                        1
+                    ],
+                    [
+                        "mantelpiece really showed",
+                        1
+                    ],
+                    [
+                        "map london underground",
+                        1
+                    ],
+                    [
+                        "mcgonagall blew mcgonagall",
+                        1
+                    ],
+                    [
+                        "mcgonagall blinked furiously",
+                        1
+                    ],
+                    [
+                        "mcgonagall curiously shaped",
+                        1
+                    ],
+                    [
+                        "mcgonagall dumbledore nodding",
+                        1
+                    ],
+                    [
+                        "mcgonagall ll wake",
+                        1
+                    ],
+                    [
+                        "mcgonagall nose reply",
+                        1
+                    ],
+                    [
+                        "mcgonagall professor dumbledore",
+                        1
+                    ],
+                    [
+                        "mcgonagall whispered patting",
+                        1
+                    ],
+                    [
+                        "meeting secret country",
+                        1
+                    ],
+                    [
+                        "milk bottles dumbledore",
+                        1
+                    ],
+                    [
+                        "minute three stood",
+                        1
+                    ],
+                    [
+                        "moment people meeting",
+                        1
+                    ],
+                    [
+                        "motorcycle kicked engine",
+                        1
+                    ],
+                    [
+                        "muffled voice ll",
+                        1
+                    ],
+                    [
+                        "muggles handkerchief sad",
+                        1
+                    ],
+                    [
+                        "muggles sorry sobbed",
+                        1
+                    ],
+                    [
+                        "nearly ten years",
+                        1
+                    ],
+                    [
+                        "neat hedges privet",
+                        1
+                    ],
+                    [
+                        "nephew front step",
+                        1
+                    ],
+                    [
+                        "news report owls",
+                        1
+                    ],
+                    [
+                        "next weeks prodded",
+                        1
+                    ],
+                    [
+                        "number crept dursley",
+                        1
+                    ],
+                    [
+                        "number four dursley",
+                        1
+                    ],
+                    [
+                        "onto motorcycle kicked",
+                        1
+                    ],
+                    [
+                        "opened front door",
+                        1
+                    ],
+                    [
+                        "orange dumbledore tabby",
+                        1
+                    ],
+                    [
+                        "outer twelve balls",
+                        1
+                    ],
+                    [
+                        "passed since dursley",
+                        1
+                    ],
+                    [
+                        "patting hagrid gingerly",
+                        1
+                    ],
+                    [
+                        "people glasses saying",
+                        1
+                    ],
+                    [
+                        "people meeting secret",
+                        1
+                    ],
+                    [
+                        "perfect map london",
+                        1
+                    ],
+                    [
+                        "photographs mantelpiece really",
+                        1
+                    ],
+                    [
+                        "photographs showed large",
+                        1
+                    ],
+                    [
+                        "pictures looked like",
+                        1
+                    ],
+                    [
+                        "pinched dumbledore cousin",
+                        1
+                    ],
+                    [
+                        "pink beach ball",
+                        1
+                    ],
+                    [
+                        "place expect astonishing",
+                        1
+                    ],
+                    [
+                        "playing computer father",
+                        1
+                    ],
+                    [
+                        "poor little harry",
+                        1
+                    ],
+                    [
+                        "potter rolled inside",
+                        1
+                    ],
+                    [
+                        "privet drive glowed",
+                        1
+                    ],
+                    [
+                        "privet drive hardly",
+                        1
+                    ],
+                    [
+                        "privet drive lay",
+                        1
+                    ],
+                    [
+                        "prodded pinched dumbledore",
+                        1
+                    ],
+                    [
+                        "professor dumbledore sir",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall blew",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall blinked",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall dumbledore",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall ll",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall professor",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall whispered",
+                        1
+                    ],
+                    [
+                        "really showed passed",
+                        1
+                    ],
+                    [
+                        "riding bicycle carousel",
+                        1
+                    ],
+                    [
+                        "roar engine rose",
+                        1
+                    ],
+                    [
+                        "rolled inside dumbledore",
+                        1
+                    ],
+                    [
+                        "room almost exactly",
+                        1
+                    ],
+                    [
+                        "room held sign",
+                        1
+                    ],
+                    [
+                        "rose tidy front",
+                        1
+                    ],
+                    [
+                        "ruffled neat hedges",
+                        1
+                    ],
+                    [
+                        "sad grip hagrid",
+                        1
+                    ],
+                    [
+                        "saying hushed voices",
+                        1
+                    ],
+                    [
+                        "scar dumbledore wouldn",
+                        1
+                    ],
+                    [
+                        "scar forever couldn",
+                        1
+                    ],
+                    [
+                        "scratchy whiskery kiss",
+                        1
+                    ],
+                    [
+                        "scream dursley opened",
+                        1
+                    ],
+                    [
+                        "secret country holding",
+                        1
+                    ],
+                    [
+                        "seen fateful news",
+                        1
+                    ],
+                    [
+                        "shaggy harry gave",
+                        1
+                    ],
+                    [
+                        "shall expect professor",
+                        1
+                    ],
+                    [
+                        "shaped cut like",
+                        1
+                    ],
+                    [
+                        "shhh hissed professor",
+                        1
+                    ],
+                    [
+                        "shone dumbledore eyes",
+                        1
+                    ],
+                    [
+                        "shook professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "shoulders shook professor",
+                        1
+                    ],
+                    [
+                        "showed large blond",
+                        1
+                    ],
+                    [
+                        "sign another lived",
+                        1
+                    ],
+                    [
+                        "silent tidy inky",
+                        1
+                    ],
+                    [
+                        "since dursley dursley",
+                        1
+                    ],
+                    [
+                        "sir asked hagrid",
+                        1
+                    ],
+                    [
+                        "sir wiping sirius",
+                        1
+                    ],
+                    [
+                        "sirius bike professor",
+                        1
+                    ],
+                    [
+                        "sirius jacket sleeve",
+                        1
+                    ],
+                    [
+                        "sirius sirius bike",
+                        1
+                    ],
+                    [
+                        "sirius streaming eyes",
+                        1
+                    ],
+                    [
+                        "sky place expect",
+                        1
+                    ],
+                    [
+                        "sleeve hagrid swung",
+                        1
+                    ],
+                    [
+                        "slept knowing dumbledore",
+                        1
+                    ],
+                    [
+                        "slinking corner street",
+                        1
+                    ],
+                    [
+                        "small hand closed",
+                        1
+                    ],
+                    [
+                        "sobbed hagrid taking",
+                        1
+                    ],
+                    [
+                        "something scar dumbledore",
+                        1
+                    ],
+                    [
+                        "sorry sobbed hagrid",
+                        1
+                    ],
+                    [
+                        "special knowing dumbledore",
+                        1
+                    ],
+                    [
+                        "sped balls street",
+                        1
+                    ],
+                    [
+                        "spend next weeks",
+                        1
+                    ],
+                    [
+                        "spotted handkerchief burying",
+                        1
+                    ],
+                    [
+                        "stand handkerchief lily",
+                        1
+                    ],
+                    [
+                        "step number four",
+                        1
+                    ],
+                    [
+                        "step privet drive",
+                        1
+                    ],
+                    [
+                        "stepped low garden",
+                        1
+                    ],
+                    [
+                        "stood looked little",
+                        1
+                    ],
+                    [
+                        "stopped took silver",
+                        1
+                    ],
+                    [
+                        "streaming eyes sirius",
+                        1
+                    ],
+                    [
+                        "street lamps privet",
+                        1
+                    ],
+                    [
+                        "suddenly hagrid howl",
+                        1
+                    ],
+                    [
+                        "suddenly orange dumbledore",
+                        1
+                    ],
+                    [
+                        "sun rose tidy",
+                        1
+                    ],
+                    [
+                        "swish dumbledore cloak",
+                        1
+                    ],
+                    [
+                        "swung hagrid onto",
+                        1
+                    ],
+                    [
+                        "tabby cat slinking",
+                        1
+                    ],
+                    [
+                        "takin sirius sirius",
+                        1
+                    ],
+                    [
+                        "taking large spotted",
+                        1
+                    ],
+                    [
+                        "ten years ago",
+                        1
+                    ],
+                    [
+                        "ten years passed",
+                        1
+                    ],
+                    [
+                        "ter muggles handkerchief",
+                        1
+                    ],
+                    [
+                        "three stood looked",
+                        1
+                    ],
+                    [
+                        "tidy front gardens",
+                        1
+                    ],
+                    [
+                        "tidy inky sky",
+                        1
+                    ],
+                    [
+                        "took harry harry",
+                        1
+                    ],
+                    [
+                        "took letter dumbledore",
+                        1
+                    ],
+                    [
+                        "took silver outer",
+                        1
+                    ],
+                    [
+                        "toward dursley dursley",
+                        1
+                    ],
+                    [
+                        "tucked letter inside",
+                        1
+                    ],
+                    [
+                        "tuft jet black",
+                        1
+                    ],
+                    [
+                        "turned dumbledore heel",
+                        1
+                    ],
+                    [
+                        "turned toward dursley",
+                        1
+                    ],
+                    [
+                        "turned walked street",
+                        1
+                    ],
+                    [
+                        "twelve balls light",
+                        1
+                    ],
+                    [
+                        "twinkling light usually",
+                        1
+                    ],
+                    [
+                        "usually shone dumbledore",
+                        1
+                    ],
+                    [
+                        "vanishing glass nearly",
+                        1
+                    ],
+                    [
+                        "ve business staying",
+                        1
+                    ],
+                    [
+                        "voice ll takin",
+                        1
+                    ],
+                    [
+                        "voices harry potter",
+                        1
+                    ],
+                    [
+                        "wake muggles sorry",
+                        1
+                    ],
+                    [
+                        "walked front door",
+                        1
+                    ],
+                    [
+                        "wall walked front",
+                        1
+                    ],
+                    [
+                        "wearing different colored",
+                        1
+                    ],
+                    [
+                        "weeks prodded pinched",
+                        1
+                    ],
+                    [
+                        "well dumbledore finally",
+                        1
+                    ],
+                    [
+                        "well dumbledore hagrid",
+                        1
+                    ],
+                    [
+                        "well go join",
+                        1
+                    ],
+                    [
+                        "whispered patting hagrid",
+                        1
+                    ],
+                    [
+                        "whispered professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "wiping sirius streaming",
+                        1
+                    ],
+                    [
+                        "woken dursley dursley",
+                        1
+                    ],
+                    [
+                        "woken hours dursley",
+                        1
+                    ],
+                    [
+                        "years ago lots",
+                        1
+                    ],
+                    [
+                        "years passed since",
+                        1
+                    ]
+                ]
+            ]
+        ]
     }
-    assert q2_test(**input)
+}"""
+    sequence_length = 3
+
+    assert q2_test(sentences_content, remove_words_content, output_content, sequence_length)
 
 def test2():
-    input = {
-        "sentences_path": 'examples/Q2_examples/example_2/sentences_small_2.csv',
-        "remove_words_path": 'data/REMOVEWORDS.csv',
-        "output_path": 'examples/Q2_examples/example_2/Q2_result2.json',
-        "sequence_length": 4
+    sentences_content = """sentence
+"Karkaroff looked extremely worried, and  Snape looked angry."
+Karkaroff hovered behind  Snape's desk for the rest of the double period.
+Karkaroff seemed intent on preventing  Snape from slipping away at the end of class.
+"Keen to hear what Karkaroff wanted to say,  Harry deliberately knocked over  Harry bottle of armadillo bile with two minutes to go to the bell, which gave  Harry an excuse to duck down behind  Harry cauldron and mop up while the rest of the class moved noisily toward the door."
+` What's so urgent?`  Harry heard  Snape hiss at Karkaroff.
+"` This,` said Karkaroff, and  Harry, peering around the edge of  Harry cauldron, saw Karkaroff  pull up the left- hand sleeve of  Harry robe and show  Snape something on  Harry inner forearm."
+"` Well?` said Karkaroff, still making every effort not to move  Harry lips.` Do you see?"
+the boy
+"""
+    remove_words_content = """words
+a
+about
+above
+actual
+after
+again
+against
+all
+alreadi
+also
+alway
+am
+amp
+an
+and
+ani
+anoth
+any
+anyth
+are
+around
+as
+at
+aww
+babi
+back
+be
+becaus
+because
+bed
+been
+befor
+before
+being
+below
+between
+birthday
+bit
+book
+both
+boy
+but
+by
+call
+can
+cannot
+cant
+car
+check
+com
+come
+could
+day
+did
+didn
+dinner
+do
+doe
+does
+doesn
+doing
+don
+done
+dont
+down
+during
+each
+eat
+end
+even
+ever
+everyon
+exam
+famili
+feel
+few
+final
+find
+first
+follow
+for
+found
+friday
+from
+further
+game
+get
+girl
+give
+gone
+gonna
+got
+gotta
+guess
+guy
+had
+hair
+happen
+has
+have
+haven
+having
+he
+head
+hear
+her
+here
+hers
+herself
+hey
+him
+himself
+his
+home
+hour
+hous
+how
+http
+i
+if
+im
+in
+into
+is
+isn
+it
+its
+itself
+job
+just
+keep
+know
+last
+later
+least
+leav
+let
+life
+listen
+littl
+live
+look
+lot
+lunch
+made
+make
+man
+mani
+may
+mayb
+me
+mean
+meet
+might
+mom
+monday
+month
+more
+morn
+most
+move
+movi
+much
+must
+my
+myself
+need
+never
+new
+night
+no
+nor
+not
+noth
+now
+of
+off
+on
+once
+one
+onli
+only
+or
+other
+ought
+our
+ours
+ourselves
+out
+over
+own
+peopl
+phone
+pic
+pictur
+play
+post
+put
+quot
+rain
+read
+readi
+realli
+run
+said
+same
+saw
+say
+school
+see
+seem
+she
+shop
+should
+show
+sinc
+sleep
+so
+some
+someon
+someth
+song
+soon
+sound
+start
+stay
+still
+studi
+stuff
+such
+summer
+sunday
+sure
+take
+talk
+tell
+than
+thank
+that
+the
+their
+theirs
+them
+themselves
+then
+there
+these
+they
+thing
+think
+this
+those
+though
+thought
+through
+time
+to
+today
+tomorrow
+tonight
+too
+total
+tri
+tweet
+twitpic
+twitter
+two
+u
+under
+until
+up
+updat
+use
+veri
+very
+video
+wait
+wanna
+want
+was
+watch
+way
+we
+weather
+week
+weekend
+went
+were
+what
+when
+where
+whi
+which
+while
+who
+whom
+why
+will
+with
+woke
+won
+work
+world
+would
+www
+yay
+yeah
+year
+yes
+yesterday
+yet
+you
+your
+yours
+yourself
+yourselves
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+k
+r
+s
+t
+u
+v
+w
+x
+u
+z
+mr
+miss
+mrs
+ms
+"""
+    output_content = """{
+    "Question 2": {
+        "4-Seq Counts": [
+            [
+                "1_seq",
+                [
+                    [
+                        "angry",
+                        1
+                    ],
+                    [
+                        "armadillo",
+                        1
+                    ],
+                    [
+                        "away",
+                        1
+                    ],
+                    [
+                        "behind",
+                        2
+                    ],
+                    [
+                        "bell",
+                        1
+                    ],
+                    [
+                        "bile",
+                        1
+                    ],
+                    [
+                        "bottle",
+                        1
+                    ],
+                    [
+                        "cauldron",
+                        2
+                    ],
+                    [
+                        "class",
+                        2
+                    ],
+                    [
+                        "deliberately",
+                        1
+                    ],
+                    [
+                        "desk",
+                        1
+                    ],
+                    [
+                        "door",
+                        1
+                    ],
+                    [
+                        "double",
+                        1
+                    ],
+                    [
+                        "duck",
+                        1
+                    ],
+                    [
+                        "edge",
+                        1
+                    ],
+                    [
+                        "effort",
+                        1
+                    ],
+                    [
+                        "every",
+                        1
+                    ],
+                    [
+                        "excuse",
+                        1
+                    ],
+                    [
+                        "extremely",
+                        1
+                    ],
+                    [
+                        "forearm",
+                        1
+                    ],
+                    [
+                        "gave",
+                        1
+                    ],
+                    [
+                        "go",
+                        1
+                    ],
+                    [
+                        "hand",
+                        1
+                    ],
+                    [
+                        "harry",
+                        10
+                    ],
+                    [
+                        "heard",
+                        1
+                    ],
+                    [
+                        "hiss",
+                        1
+                    ],
+                    [
+                        "hovered",
+                        1
+                    ],
+                    [
+                        "inner",
+                        1
+                    ],
+                    [
+                        "intent",
+                        1
+                    ],
+                    [
+                        "karkaroff",
+                        8
+                    ],
+                    [
+                        "keen",
+                        1
+                    ],
+                    [
+                        "knocked",
+                        1
+                    ],
+                    [
+                        "left",
+                        1
+                    ],
+                    [
+                        "lips",
+                        1
+                    ],
+                    [
+                        "looked",
+                        2
+                    ],
+                    [
+                        "making",
+                        1
+                    ],
+                    [
+                        "minutes",
+                        1
+                    ],
+                    [
+                        "mop",
+                        1
+                    ],
+                    [
+                        "moved",
+                        1
+                    ],
+                    [
+                        "noisily",
+                        1
+                    ],
+                    [
+                        "peering",
+                        1
+                    ],
+                    [
+                        "period",
+                        1
+                    ],
+                    [
+                        "preventing",
+                        1
+                    ],
+                    [
+                        "pull",
+                        1
+                    ],
+                    [
+                        "rest",
+                        2
+                    ],
+                    [
+                        "robe",
+                        1
+                    ],
+                    [
+                        "seemed",
+                        1
+                    ],
+                    [
+                        "sleeve",
+                        1
+                    ],
+                    [
+                        "slipping",
+                        1
+                    ],
+                    [
+                        "snape",
+                        5
+                    ],
+                    [
+                        "something",
+                        1
+                    ],
+                    [
+                        "toward",
+                        1
+                    ],
+                    [
+                        "urgent",
+                        1
+                    ],
+                    [
+                        "wanted",
+                        1
+                    ],
+                    [
+                        "well",
+                        1
+                    ],
+                    [
+                        "worried",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "2_seq",
+                [
+                    [
+                        "armadillo bile",
+                        1
+                    ],
+                    [
+                        "away class",
+                        1
+                    ],
+                    [
+                        "behind harry",
+                        1
+                    ],
+                    [
+                        "behind snape",
+                        1
+                    ],
+                    [
+                        "bell gave",
+                        1
+                    ],
+                    [
+                        "bile minutes",
+                        1
+                    ],
+                    [
+                        "bottle armadillo",
+                        1
+                    ],
+                    [
+                        "cauldron karkaroff",
+                        1
+                    ],
+                    [
+                        "cauldron mop",
+                        1
+                    ],
+                    [
+                        "class moved",
+                        1
+                    ],
+                    [
+                        "deliberately knocked",
+                        1
+                    ],
+                    [
+                        "desk rest",
+                        1
+                    ],
+                    [
+                        "double period",
+                        1
+                    ],
+                    [
+                        "duck behind",
+                        1
+                    ],
+                    [
+                        "edge harry",
+                        1
+                    ],
+                    [
+                        "effort harry",
+                        1
+                    ],
+                    [
+                        "every effort",
+                        1
+                    ],
+                    [
+                        "excuse duck",
+                        1
+                    ],
+                    [
+                        "extremely worried",
+                        1
+                    ],
+                    [
+                        "gave harry",
+                        1
+                    ],
+                    [
+                        "go bell",
+                        1
+                    ],
+                    [
+                        "hand sleeve",
+                        1
+                    ],
+                    [
+                        "harry bottle",
+                        1
+                    ],
+                    [
+                        "harry cauldron",
+                        2
+                    ],
+                    [
+                        "harry deliberately",
+                        1
+                    ],
+                    [
+                        "harry excuse",
+                        1
+                    ],
+                    [
+                        "harry heard",
+                        1
+                    ],
+                    [
+                        "harry inner",
+                        1
+                    ],
+                    [
+                        "harry lips",
+                        1
+                    ],
+                    [
+                        "harry peering",
+                        1
+                    ],
+                    [
+                        "harry robe",
+                        1
+                    ],
+                    [
+                        "heard snape",
+                        1
+                    ],
+                    [
+                        "hiss karkaroff",
+                        1
+                    ],
+                    [
+                        "hovered behind",
+                        1
+                    ],
+                    [
+                        "inner forearm",
+                        1
+                    ],
+                    [
+                        "intent preventing",
+                        1
+                    ],
+                    [
+                        "karkaroff harry",
+                        1
+                    ],
+                    [
+                        "karkaroff hovered",
+                        1
+                    ],
+                    [
+                        "karkaroff looked",
+                        1
+                    ],
+                    [
+                        "karkaroff making",
+                        1
+                    ],
+                    [
+                        "karkaroff pull",
+                        1
+                    ],
+                    [
+                        "karkaroff seemed",
+                        1
+                    ],
+                    [
+                        "karkaroff wanted",
+                        1
+                    ],
+                    [
+                        "keen karkaroff",
+                        1
+                    ],
+                    [
+                        "knocked harry",
+                        1
+                    ],
+                    [
+                        "left hand",
+                        1
+                    ],
+                    [
+                        "looked angry",
+                        1
+                    ],
+                    [
+                        "looked extremely",
+                        1
+                    ],
+                    [
+                        "making every",
+                        1
+                    ],
+                    [
+                        "minutes go",
+                        1
+                    ],
+                    [
+                        "mop rest",
+                        1
+                    ],
+                    [
+                        "moved noisily",
+                        1
+                    ],
+                    [
+                        "noisily toward",
+                        1
+                    ],
+                    [
+                        "peering edge",
+                        1
+                    ],
+                    [
+                        "preventing snape",
+                        1
+                    ],
+                    [
+                        "pull left",
+                        1
+                    ],
+                    [
+                        "rest class",
+                        1
+                    ],
+                    [
+                        "rest double",
+                        1
+                    ],
+                    [
+                        "robe snape",
+                        1
+                    ],
+                    [
+                        "seemed intent",
+                        1
+                    ],
+                    [
+                        "sleeve harry",
+                        1
+                    ],
+                    [
+                        "slipping away",
+                        1
+                    ],
+                    [
+                        "snape desk",
+                        1
+                    ],
+                    [
+                        "snape hiss",
+                        1
+                    ],
+                    [
+                        "snape looked",
+                        1
+                    ],
+                    [
+                        "snape slipping",
+                        1
+                    ],
+                    [
+                        "snape something",
+                        1
+                    ],
+                    [
+                        "something harry",
+                        1
+                    ],
+                    [
+                        "toward door",
+                        1
+                    ],
+                    [
+                        "urgent harry",
+                        1
+                    ],
+                    [
+                        "wanted harry",
+                        1
+                    ],
+                    [
+                        "well karkaroff",
+                        1
+                    ],
+                    [
+                        "worried snape",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "3_seq",
+                [
+                    [
+                        "armadillo bile minutes",
+                        1
+                    ],
+                    [
+                        "behind harry cauldron",
+                        1
+                    ],
+                    [
+                        "behind snape desk",
+                        1
+                    ],
+                    [
+                        "bell gave harry",
+                        1
+                    ],
+                    [
+                        "bile minutes go",
+                        1
+                    ],
+                    [
+                        "bottle armadillo bile",
+                        1
+                    ],
+                    [
+                        "cauldron karkaroff pull",
+                        1
+                    ],
+                    [
+                        "cauldron mop rest",
+                        1
+                    ],
+                    [
+                        "class moved noisily",
+                        1
+                    ],
+                    [
+                        "deliberately knocked harry",
+                        1
+                    ],
+                    [
+                        "desk rest double",
+                        1
+                    ],
+                    [
+                        "duck behind harry",
+                        1
+                    ],
+                    [
+                        "edge harry cauldron",
+                        1
+                    ],
+                    [
+                        "effort harry lips",
+                        1
+                    ],
+                    [
+                        "every effort harry",
+                        1
+                    ],
+                    [
+                        "excuse duck behind",
+                        1
+                    ],
+                    [
+                        "extremely worried snape",
+                        1
+                    ],
+                    [
+                        "gave harry excuse",
+                        1
+                    ],
+                    [
+                        "go bell gave",
+                        1
+                    ],
+                    [
+                        "hand sleeve harry",
+                        1
+                    ],
+                    [
+                        "harry bottle armadillo",
+                        1
+                    ],
+                    [
+                        "harry cauldron karkaroff",
+                        1
+                    ],
+                    [
+                        "harry cauldron mop",
+                        1
+                    ],
+                    [
+                        "harry deliberately knocked",
+                        1
+                    ],
+                    [
+                        "harry excuse duck",
+                        1
+                    ],
+                    [
+                        "harry heard snape",
+                        1
+                    ],
+                    [
+                        "harry inner forearm",
+                        1
+                    ],
+                    [
+                        "harry peering edge",
+                        1
+                    ],
+                    [
+                        "harry robe snape",
+                        1
+                    ],
+                    [
+                        "heard snape hiss",
+                        1
+                    ],
+                    [
+                        "hovered behind snape",
+                        1
+                    ],
+                    [
+                        "intent preventing snape",
+                        1
+                    ],
+                    [
+                        "karkaroff harry peering",
+                        1
+                    ],
+                    [
+                        "karkaroff hovered behind",
+                        1
+                    ],
+                    [
+                        "karkaroff looked extremely",
+                        1
+                    ],
+                    [
+                        "karkaroff making every",
+                        1
+                    ],
+                    [
+                        "karkaroff pull left",
+                        1
+                    ],
+                    [
+                        "karkaroff seemed intent",
+                        1
+                    ],
+                    [
+                        "karkaroff wanted harry",
+                        1
+                    ],
+                    [
+                        "keen karkaroff wanted",
+                        1
+                    ],
+                    [
+                        "knocked harry bottle",
+                        1
+                    ],
+                    [
+                        "left hand sleeve",
+                        1
+                    ],
+                    [
+                        "looked extremely worried",
+                        1
+                    ],
+                    [
+                        "making every effort",
+                        1
+                    ],
+                    [
+                        "minutes go bell",
+                        1
+                    ],
+                    [
+                        "mop rest class",
+                        1
+                    ],
+                    [
+                        "moved noisily toward",
+                        1
+                    ],
+                    [
+                        "noisily toward door",
+                        1
+                    ],
+                    [
+                        "peering edge harry",
+                        1
+                    ],
+                    [
+                        "preventing snape slipping",
+                        1
+                    ],
+                    [
+                        "pull left hand",
+                        1
+                    ],
+                    [
+                        "rest class moved",
+                        1
+                    ],
+                    [
+                        "rest double period",
+                        1
+                    ],
+                    [
+                        "robe snape something",
+                        1
+                    ],
+                    [
+                        "seemed intent preventing",
+                        1
+                    ],
+                    [
+                        "sleeve harry robe",
+                        1
+                    ],
+                    [
+                        "slipping away class",
+                        1
+                    ],
+                    [
+                        "snape desk rest",
+                        1
+                    ],
+                    [
+                        "snape hiss karkaroff",
+                        1
+                    ],
+                    [
+                        "snape looked angry",
+                        1
+                    ],
+                    [
+                        "snape slipping away",
+                        1
+                    ],
+                    [
+                        "snape something harry",
+                        1
+                    ],
+                    [
+                        "something harry inner",
+                        1
+                    ],
+                    [
+                        "urgent harry heard",
+                        1
+                    ],
+                    [
+                        "wanted harry deliberately",
+                        1
+                    ],
+                    [
+                        "well karkaroff making",
+                        1
+                    ],
+                    [
+                        "worried snape looked",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "4_seq",
+                [
+                    [
+                        "armadillo bile minutes go",
+                        1
+                    ],
+                    [
+                        "behind harry cauldron mop",
+                        1
+                    ],
+                    [
+                        "behind snape desk rest",
+                        1
+                    ],
+                    [
+                        "bell gave harry excuse",
+                        1
+                    ],
+                    [
+                        "bile minutes go bell",
+                        1
+                    ],
+                    [
+                        "bottle armadillo bile minutes",
+                        1
+                    ],
+                    [
+                        "cauldron karkaroff pull left",
+                        1
+                    ],
+                    [
+                        "cauldron mop rest class",
+                        1
+                    ],
+                    [
+                        "class moved noisily toward",
+                        1
+                    ],
+                    [
+                        "deliberately knocked harry bottle",
+                        1
+                    ],
+                    [
+                        "desk rest double period",
+                        1
+                    ],
+                    [
+                        "duck behind harry cauldron",
+                        1
+                    ],
+                    [
+                        "edge harry cauldron karkaroff",
+                        1
+                    ],
+                    [
+                        "every effort harry lips",
+                        1
+                    ],
+                    [
+                        "excuse duck behind harry",
+                        1
+                    ],
+                    [
+                        "extremely worried snape looked",
+                        1
+                    ],
+                    [
+                        "gave harry excuse duck",
+                        1
+                    ],
+                    [
+                        "go bell gave harry",
+                        1
+                    ],
+                    [
+                        "hand sleeve harry robe",
+                        1
+                    ],
+                    [
+                        "harry bottle armadillo bile",
+                        1
+                    ],
+                    [
+                        "harry cauldron karkaroff pull",
+                        1
+                    ],
+                    [
+                        "harry cauldron mop rest",
+                        1
+                    ],
+                    [
+                        "harry deliberately knocked harry",
+                        1
+                    ],
+                    [
+                        "harry excuse duck behind",
+                        1
+                    ],
+                    [
+                        "harry heard snape hiss",
+                        1
+                    ],
+                    [
+                        "harry peering edge harry",
+                        1
+                    ],
+                    [
+                        "harry robe snape something",
+                        1
+                    ],
+                    [
+                        "heard snape hiss karkaroff",
+                        1
+                    ],
+                    [
+                        "hovered behind snape desk",
+                        1
+                    ],
+                    [
+                        "intent preventing snape slipping",
+                        1
+                    ],
+                    [
+                        "karkaroff harry peering edge",
+                        1
+                    ],
+                    [
+                        "karkaroff hovered behind snape",
+                        1
+                    ],
+                    [
+                        "karkaroff looked extremely worried",
+                        1
+                    ],
+                    [
+                        "karkaroff making every effort",
+                        1
+                    ],
+                    [
+                        "karkaroff pull left hand",
+                        1
+                    ],
+                    [
+                        "karkaroff seemed intent preventing",
+                        1
+                    ],
+                    [
+                        "karkaroff wanted harry deliberately",
+                        1
+                    ],
+                    [
+                        "keen karkaroff wanted harry",
+                        1
+                    ],
+                    [
+                        "knocked harry bottle armadillo",
+                        1
+                    ],
+                    [
+                        "left hand sleeve harry",
+                        1
+                    ],
+                    [
+                        "looked extremely worried snape",
+                        1
+                    ],
+                    [
+                        "making every effort harry",
+                        1
+                    ],
+                    [
+                        "minutes go bell gave",
+                        1
+                    ],
+                    [
+                        "mop rest class moved",
+                        1
+                    ],
+                    [
+                        "moved noisily toward door",
+                        1
+                    ],
+                    [
+                        "peering edge harry cauldron",
+                        1
+                    ],
+                    [
+                        "preventing snape slipping away",
+                        1
+                    ],
+                    [
+                        "pull left hand sleeve",
+                        1
+                    ],
+                    [
+                        "rest class moved noisily",
+                        1
+                    ],
+                    [
+                        "robe snape something harry",
+                        1
+                    ],
+                    [
+                        "seemed intent preventing snape",
+                        1
+                    ],
+                    [
+                        "sleeve harry robe snape",
+                        1
+                    ],
+                    [
+                        "snape desk rest double",
+                        1
+                    ],
+                    [
+                        "snape slipping away class",
+                        1
+                    ],
+                    [
+                        "snape something harry inner",
+                        1
+                    ],
+                    [
+                        "something harry inner forearm",
+                        1
+                    ],
+                    [
+                        "urgent harry heard snape",
+                        1
+                    ],
+                    [
+                        "wanted harry deliberately knocked",
+                        1
+                    ],
+                    [
+                        "well karkaroff making every",
+                        1
+                    ],
+                    [
+                        "worried snape looked angry",
+                        1
+                    ]
+                ]
+            ]
+        ]
     }
-    assert q2_test(**input)
+}"""
+    sequence_length = 4
+
+    assert q2_test(sentences_content, remove_words_content, output_content, sequence_length)
 
 def test3():
-    input = {
-        "sentences_path": 'examples/Q2_examples/example_3/sentences_small_3.csv',
-        "remove_words_path": 'data/REMOVEWORDS.csv',
-        "output_path": 'examples/Q2_examples/example_3/Q2_result3.json',
-        "sequence_length": 5
+    sentences_content = """sentence
+"This is urgent,' said  Harry curtly.   '"
+"Ooooh, urgent, is This?'"
+said the other gargoyle in a high- pitched voice.'
+"Well, that's put us in our place, hasn't that?'"
+Harry knocked.
+"Harry heard footsteps, then the door opened and  Harry found  Harry face to face with Professor  McGonagall.   '"
+You haven't been given another detention!'
+"McGonagall said at once,  McGonagall square spectacles flashing alarmingly.   '"
+"""
+    remove_words_content = """words
+a
+about
+above
+actual
+after
+again
+against
+all
+alreadi
+also
+alway
+am
+amp
+an
+and
+ani
+anoth
+any
+anyth
+are
+around
+as
+at
+aww
+babi
+back
+be
+becaus
+because
+bed
+been
+befor
+before
+being
+below
+between
+birthday
+bit
+book
+both
+boy
+but
+by
+call
+can
+cannot
+cant
+car
+check
+com
+come
+could
+day
+did
+didn
+dinner
+do
+doe
+does
+doesn
+doing
+don
+done
+dont
+down
+during
+each
+eat
+end
+even
+ever
+everyon
+exam
+famili
+feel
+few
+final
+find
+first
+follow
+for
+found
+friday
+from
+further
+game
+get
+girl
+give
+gone
+gonna
+got
+gotta
+guess
+guy
+had
+hair
+happen
+has
+have
+haven
+having
+he
+head
+hear
+her
+here
+hers
+herself
+hey
+him
+himself
+his
+home
+hour
+hous
+how
+http
+i
+if
+im
+in
+into
+is
+isn
+it
+its
+itself
+job
+just
+keep
+know
+last
+later
+least
+leav
+let
+life
+listen
+littl
+live
+look
+lot
+lunch
+made
+make
+man
+mani
+may
+mayb
+me
+mean
+meet
+might
+mom
+monday
+month
+more
+morn
+most
+move
+movi
+much
+must
+my
+myself
+need
+never
+new
+night
+no
+nor
+not
+noth
+now
+of
+off
+on
+once
+one
+onli
+only
+or
+other
+ought
+our
+ours
+ourselves
+out
+over
+own
+peopl
+phone
+pic
+pictur
+play
+post
+put
+quot
+rain
+read
+readi
+realli
+run
+said
+same
+saw
+say
+school
+see
+seem
+she
+shop
+should
+show
+sinc
+sleep
+so
+some
+someon
+someth
+song
+soon
+sound
+start
+stay
+still
+studi
+stuff
+such
+summer
+sunday
+sure
+take
+talk
+tell
+than
+thank
+that
+the
+their
+theirs
+them
+themselves
+then
+there
+these
+they
+thing
+think
+this
+those
+though
+thought
+through
+time
+to
+today
+tomorrow
+tonight
+too
+total
+tri
+tweet
+twitpic
+twitter
+two
+u
+under
+until
+up
+updat
+use
+veri
+very
+video
+wait
+wanna
+want
+was
+watch
+way
+we
+weather
+week
+weekend
+went
+were
+what
+when
+where
+whi
+which
+while
+who
+whom
+why
+will
+with
+woke
+won
+work
+world
+would
+www
+yay
+yeah
+year
+yes
+yesterday
+yet
+you
+your
+yours
+yourself
+yourselves
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+k
+r
+s
+t
+u
+v
+w
+x
+u
+z
+mr
+miss
+mrs
+ms
+"""
+    output_content = """{
+    "Question 2": {
+        "5-Seq Counts": [
+            [
+                "1_seq",
+                [
+                    [
+                        "alarmingly",
+                        1
+                    ],
+                    [
+                        "another",
+                        1
+                    ],
+                    [
+                        "curtly",
+                        1
+                    ],
+                    [
+                        "detention",
+                        1
+                    ],
+                    [
+                        "door",
+                        1
+                    ],
+                    [
+                        "face",
+                        2
+                    ],
+                    [
+                        "flashing",
+                        1
+                    ],
+                    [
+                        "footsteps",
+                        1
+                    ],
+                    [
+                        "gargoyle",
+                        1
+                    ],
+                    [
+                        "given",
+                        1
+                    ],
+                    [
+                        "harry",
+                        5
+                    ],
+                    [
+                        "hasn",
+                        1
+                    ],
+                    [
+                        "heard",
+                        1
+                    ],
+                    [
+                        "high",
+                        1
+                    ],
+                    [
+                        "knocked",
+                        1
+                    ],
+                    [
+                        "mcgonagall",
+                        3
+                    ],
+                    [
+                        "ooooh",
+                        1
+                    ],
+                    [
+                        "opened",
+                        1
+                    ],
+                    [
+                        "pitched",
+                        1
+                    ],
+                    [
+                        "place",
+                        1
+                    ],
+                    [
+                        "professor",
+                        1
+                    ],
+                    [
+                        "spectacles",
+                        1
+                    ],
+                    [
+                        "square",
+                        1
+                    ],
+                    [
+                        "urgent",
+                        2
+                    ],
+                    [
+                        "us",
+                        1
+                    ],
+                    [
+                        "voice",
+                        1
+                    ],
+                    [
+                        "well",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "2_seq",
+                [
+                    [
+                        "another detention",
+                        1
+                    ],
+                    [
+                        "door opened",
+                        1
+                    ],
+                    [
+                        "face face",
+                        1
+                    ],
+                    [
+                        "face professor",
+                        1
+                    ],
+                    [
+                        "flashing alarmingly",
+                        1
+                    ],
+                    [
+                        "footsteps door",
+                        1
+                    ],
+                    [
+                        "gargoyle high",
+                        1
+                    ],
+                    [
+                        "given another",
+                        1
+                    ],
+                    [
+                        "harry curtly",
+                        1
+                    ],
+                    [
+                        "harry face",
+                        1
+                    ],
+                    [
+                        "harry harry",
+                        1
+                    ],
+                    [
+                        "harry heard",
+                        1
+                    ],
+                    [
+                        "harry knocked",
+                        1
+                    ],
+                    [
+                        "heard footsteps",
+                        1
+                    ],
+                    [
+                        "high pitched",
+                        1
+                    ],
+                    [
+                        "mcgonagall mcgonagall",
+                        1
+                    ],
+                    [
+                        "mcgonagall square",
+                        1
+                    ],
+                    [
+                        "ooooh urgent",
+                        1
+                    ],
+                    [
+                        "opened harry",
+                        1
+                    ],
+                    [
+                        "pitched voice",
+                        1
+                    ],
+                    [
+                        "place hasn",
+                        1
+                    ],
+                    [
+                        "professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "spectacles flashing",
+                        1
+                    ],
+                    [
+                        "square spectacles",
+                        1
+                    ],
+                    [
+                        "urgent harry",
+                        1
+                    ],
+                    [
+                        "us place",
+                        1
+                    ],
+                    [
+                        "well us",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "3_seq",
+                [
+                    [
+                        "door opened harry",
+                        1
+                    ],
+                    [
+                        "face face professor",
+                        1
+                    ],
+                    [
+                        "face professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "footsteps door opened",
+                        1
+                    ],
+                    [
+                        "gargoyle high pitched",
+                        1
+                    ],
+                    [
+                        "given another detention",
+                        1
+                    ],
+                    [
+                        "harry face face",
+                        1
+                    ],
+                    [
+                        "harry harry face",
+                        1
+                    ],
+                    [
+                        "harry heard footsteps",
+                        1
+                    ],
+                    [
+                        "heard footsteps door",
+                        1
+                    ],
+                    [
+                        "high pitched voice",
+                        1
+                    ],
+                    [
+                        "mcgonagall mcgonagall square",
+                        1
+                    ],
+                    [
+                        "mcgonagall square spectacles",
+                        1
+                    ],
+                    [
+                        "opened harry harry",
+                        1
+                    ],
+                    [
+                        "spectacles flashing alarmingly",
+                        1
+                    ],
+                    [
+                        "square spectacles flashing",
+                        1
+                    ],
+                    [
+                        "urgent harry curtly",
+                        1
+                    ],
+                    [
+                        "us place hasn",
+                        1
+                    ],
+                    [
+                        "well us place",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "4_seq",
+                [
+                    [
+                        "door opened harry harry",
+                        1
+                    ],
+                    [
+                        "face face professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "footsteps door opened harry",
+                        1
+                    ],
+                    [
+                        "gargoyle high pitched voice",
+                        1
+                    ],
+                    [
+                        "harry face face professor",
+                        1
+                    ],
+                    [
+                        "harry harry face face",
+                        1
+                    ],
+                    [
+                        "harry heard footsteps door",
+                        1
+                    ],
+                    [
+                        "heard footsteps door opened",
+                        1
+                    ],
+                    [
+                        "mcgonagall mcgonagall square spectacles",
+                        1
+                    ],
+                    [
+                        "mcgonagall square spectacles flashing",
+                        1
+                    ],
+                    [
+                        "opened harry harry face",
+                        1
+                    ],
+                    [
+                        "square spectacles flashing alarmingly",
+                        1
+                    ],
+                    [
+                        "well us place hasn",
+                        1
+                    ]
+                ]
+            ],
+            [
+                "5_seq",
+                [
+                    [
+                        "door opened harry harry face",
+                        1
+                    ],
+                    [
+                        "footsteps door opened harry harry",
+                        1
+                    ],
+                    [
+                        "harry face face professor mcgonagall",
+                        1
+                    ],
+                    [
+                        "harry harry face face professor",
+                        1
+                    ],
+                    [
+                        "harry heard footsteps door opened",
+                        1
+                    ],
+                    [
+                        "heard footsteps door opened harry",
+                        1
+                    ],
+                    [
+                        "mcgonagall mcgonagall square spectacles flashing",
+                        1
+                    ],
+                    [
+                        "mcgonagall square spectacles flashing alarmingly",
+                        1
+                    ],
+                    [
+                        "opened harry harry face face",
+                        1
+                    ]
+                ]
+            ]
+        ]
     }
-    assert q2_test(**input)
+}"""
+    sequence_length = 5
+
+    assert q2_test(sentences_content, remove_words_content, output_content, sequence_length)

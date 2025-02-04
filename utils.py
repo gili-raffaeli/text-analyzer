@@ -1,4 +1,6 @@
 import json
+import os
+import tempfile
 from typing import Dict, List
 
 def is_processed_sentences_type(variable: any) -> bool:
@@ -54,3 +56,17 @@ def read_json_file(file_path):
     except Exception as e:
         print(f"Error in read_json_file: {e}")
         return None
+    
+def create_temp_file(content: str, suffix=".csv") -> str:
+    """Creates a temporary file with the given content and returns its path."""
+    temp = tempfile.NamedTemporaryFile(mode='w+', delete=False, suffix=suffix)
+    try:
+        temp.write(content)
+        temp.flush() 
+        temp.close()
+        return temp.name
+    except Exception as e:
+        temp.close()
+        os.unlink(temp.name)
+        raise e
+
