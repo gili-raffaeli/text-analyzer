@@ -1,5 +1,4 @@
 from typing import Dict, List
-import utils
 
 class CountWordsSeq:
     """A class for extracting and counting sequences of words from preprocessed sentences."""
@@ -71,7 +70,7 @@ class CountWordsSeq:
             k_seq = self.count_sequences_len_k()
             if k_seq:
                 for k_seq_type, n_seq_counts in k_seq.items():
-                    n_seq_list = utils.turn_Dict_str_any_to_List_any(n_seq_counts)
+                    n_seq_list = [[key, value] for key, value in n_seq_counts.items()]
                     list_seq_count.append([k_seq_type, n_seq_list])
 
             return {

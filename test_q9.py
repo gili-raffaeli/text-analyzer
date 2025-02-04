@@ -12,6 +12,7 @@ def q9_test(sentences_content, remove_words_content, output_content, threshold) 
         preprocessor = Preprocess(remove_words_path, sentences_path)
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         result = SentencesConnections(preprocessed_sentences, threshold).task_9_format()
+        
         actual_json_str = to_json_str(result)
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str

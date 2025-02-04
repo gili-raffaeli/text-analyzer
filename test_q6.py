@@ -14,6 +14,7 @@ def q6_test(sentences_content, people_content, remove_words_content, output_cont
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         preprocessed_people = preprocessor.get_preprocessed_people()
         result = PeopleConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_6_format()
+        
         actual_json_str = to_json_str(result)
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str

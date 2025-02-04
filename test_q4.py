@@ -1,8 +1,7 @@
-import json
 from preprocess import Preprocess
 from search_engine import SearchEngine
 import os
-from utils import to_json_str, read_json_file_to_str, create_temp_file
+from utils import to_json_str, read_json_file_to_str, create_temp_file, read_json_file
 
 def q4_test(sentences_content, kseq_query_keys_content, remove_words_path, output_path) -> bool:
     try:
@@ -13,9 +12,10 @@ def q4_test(sentences_content, kseq_query_keys_content, remove_words_path, outpu
 
         preprocessor = Preprocess(remove_words_path, sentences_path)
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
-        query_data = json.loads(read_json_file_to_str(kseq_query_keys_path))
+        query_data = read_json_file(kseq_query_keys_path)
         search_engine = SearchEngine(preprocessed_sentences, preprocessor.clean_List_List_str(query_data["keys"]))
         search_result = search_engine.task_4_format()
+        
         actual_json_str = to_json_str(search_result)
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str

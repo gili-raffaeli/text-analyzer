@@ -1,8 +1,7 @@
-import json
 from people_connections import PeopleConnections
 from preprocess import Preprocess
 import os
-from utils import to_json_str, read_json_file_to_str, create_temp_file
+from utils import to_json_str, read_json_file_to_str, create_temp_file, read_json_file
 
 def q7_test(sentences_content, people_content, people_connections_content, remove_words_content, output_content, window_size, threshold, maximal_distance) -> bool:
     try:
@@ -15,16 +14,10 @@ def q7_test(sentences_content, people_content, people_connections_content, remov
         preprocessor = Preprocess(remove_words_path, sentences_path, people_path)
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         preprocessed_people = preprocessor.get_preprocessed_people()
-        try:
-            with open(people_connections_path, mode='r') as file:
-                expected_output = file.read()
-            expected_json = json.loads(expected_output)
-        except:
-            print("oops")
-        formated = sorted([sorted(name for name in pair) for pair in expected_json["keys"]])
-        result = PeopleConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_7_8_format(formated, maximal_distance = maximal_distance)
+        pairs_data = read_json_file(people_connections_path)["keys"]
+        result = PeopleConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_7_8_format(pairs_data, maximal_distance = maximal_distance)
+        
         actual_json_str = to_json_str(result)
-        print("actual_json_str: ", actual_json_str)
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
     except:

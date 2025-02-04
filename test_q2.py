@@ -12,6 +12,7 @@ def q2_test(sentences_content, remove_words_content, output_content, sequence_le
         
         preprocess_object = Preprocess(remove_words_path, sentences_path)
         k_seq = CountWordsSeq(preprocess_object.get_preprocessed_sentences(), sequence_length)
+        
         actual_json_str = to_json_str(k_seq.task_2_format())
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str

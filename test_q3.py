@@ -12,6 +12,7 @@ def q3_test(sentences_content, people_content, remove_words_content, output_cont
 
         preprocess_object = Preprocess(remove_words_path, sentences_path, people_path)
         people = CountPeopleMentions(preprocess_object.get_preprocessed_people(), preprocess_object.get_preprocessed_sentences()).task_3_format()
+        
         actual_json_str = to_json_str(people)
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str

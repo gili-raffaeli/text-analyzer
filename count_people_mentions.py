@@ -12,9 +12,7 @@ class CountPeopleMentions:
             preprocess_sentences (List[str]): A list of sentences (strings) to analyze for name occurrences.
         """
         try:
-            # if not utils.is_processed_people_type(preprocess_people): raise TypeError # slower?
             self.__preprocess_people = preprocess_people
-            # if not utils.is_processed_sentences_type(preprocess_sentences): raise TypeError # slower?
             self.__preprocess_sentences = preprocess_sentences
             self.__longest_name_len = self.__get_longest_name_len()
             self.__k_seq = self.__get_seqs_count() or {}

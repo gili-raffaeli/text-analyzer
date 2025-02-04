@@ -2,10 +2,6 @@ from preprocess import Preprocess
 import os
 from utils import to_json_str, read_json_file_to_str, create_temp_file
 
-    # sentences_content = """"""
-    # people_content = """"""
-    # remove_words_content = """"""
-    # output_content = """"""
 
 def q1_test(sentences_content, people_content, remove_words_content, output_content) -> bool:
     try:
@@ -15,6 +11,7 @@ def q1_test(sentences_content, people_content, remove_words_content, output_cont
         output_path = create_temp_file(output_content, ".json")
 
         preprocess_object = Preprocess(remove_words_path, sentences_path, people_path)
+        
         actual_output_str = to_json_str(preprocess_object.task_1_format())
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_output_str
