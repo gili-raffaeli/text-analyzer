@@ -95,10 +95,10 @@ class Preprocess:
             for sentence in cleaned_sentences:
                 remove_sentence = self.__remove_words(sentence)
                 if remove_sentence: preprocess_sentences.append(remove_sentence)
-            return preprocess_sentences if preprocess_sentences else [[]]
+            return preprocess_sentences if preprocess_sentences else []
         except Exception as e:
             print(f"Error processing sentences: {e}")
-            return [[]]
+            return []
     
     def __is_name_used(self, name: List[str]) -> bool:
         """Checks if the given name has already been used (to avoid duplicates)."""
@@ -135,7 +135,7 @@ class Preprocess:
             return people_names
         except Exception as e:
             print(f"Error processing people data: {e}")
-            return [[]]
+            return []
 
     def clean_List_List_str(self, object: List[List[str]]) -> List[List[str]]:
         """Processes a list of lists of strings by cleaning each word and removing unwanted words."""

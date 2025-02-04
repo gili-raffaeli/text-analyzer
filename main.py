@@ -88,7 +88,8 @@ def validate_args(args) -> bool:
     else:
         if not is_valid_file(args.preprocessed): return False
 
-    if args.task == '1': pass
+    if args.task == '1':
+        if not is_valid_file(args.removewords) or not is_valid_file(args.sentences): return False
     elif args.task == '2':
         if not is_valid_int(args.maxk): return False
     elif args.task == '3': pass
@@ -120,47 +121,45 @@ def main():
     args = readargs()
     if not validate_args(args): return
 
-    if args.preprocessed is None:
-        processed_object = Preprocess(args.removewords, args.sentences, args.names)
-        processed_data = processed_object.task_1_format()
-    else:
-        if args.task == '1':
-            print("invalid input")
-            return
-        processed_data = utils.read_json_file(args.preprocessed)
-        if not processed_data: return
-
     try:    
+        if args.preprocessed is None or args.task == '1':
+            processed_object = Preprocess(args.removewords, args.sentences, args.names)
+            processed_data = processed_object.task_1_format()
+        else:
+            processed_data = utils.read_json_file(args.preprocessed)
+
         processed_sentences = processed_data["Question 1"]["Processed Sentences"]
         processed_names = processed_data["Question 1"]["Processed Names"]
-        # if processed_sentences
     except Exception as e:
-        print(f'Error in getting processed_sentences processed_names: {e}')
+        print(f'Error in getting processed_sentences and processed_names: {e}')
         return
     
-    if args.task == '1': 
-        json_print(processed_data)
-    elif args.task == '2': 
-        json_print(CountWordsSeq(processed_sentences, args.maxk).task_2_format())
-    elif args.task == '3': 
-        json_print(CountPeopleMentions(processed_names, processed_sentences).task_3_format())
-    elif args.task == '4':
-        query_data = utils.read_json_file(args.qsek_query_path)["keys"]
-        json_print(SearchEngine(processed_sentences, query_data).task_4_format())
-    elif args.task == '5': 
-        json_print(PersonContexts(processed_sentences, processed_names, args.maxk).task_5_format())
-    elif args.task == '6': 
-        json_print(PeopleConnections(processed_sentences, processed_names, args.windowsize, args.threshold).task_6_format())
-    elif args.task in ['7', '8']:
-        pairs_data = utils.read_json_file(args.pairs)["keys"]
-        find_connections = PeopleConnections(processed_sentences, processed_names, args.windowsize, args.threshold)
-        if args.task == '7': 
-            json_print(find_connections.task_7_8_format(pairs_data, maximal_distance = args.maximal_distance))
-        elif args.task == '8': 
-            json_print(find_connections.task_7_8_format(pairs_data, fixed_length = args.fixed_length))
-    elif args.task == '9': 
-        json_print(SentencesConnections(processed_sentences, args.threshold).task_9_format())
-    else: print("invalid input")
+    try:
+        if args.task == '1': 
+            json_print(processed_data)
+        elif args.task == '2': 
+            json_print(CountWordsSeq(processed_sentences, args.maxk).task_2_format())
+        elif args.task == '3': 
+            json_print(CountPeopleMentions(processed_names, processed_sentences).task_3_format())
+        elif args.task == '4':
+            query_data = utils.read_json_file(args.qsek_query_path)["keys"]
+            json_print(SearchEngine(processed_sentences, query_data).task_4_format())
+        elif args.task == '5': 
+            json_print(PersonContexts(processed_sentences, processed_names, args.maxk).task_5_format())
+        elif args.task == '6': 
+            json_print(PeopleConnections(processed_sentences, processed_names, args.windowsize, args.threshold).task_6_format())
+        elif args.task in ['7', '8']:
+            pairs_data = utils.read_json_file(args.pairs)["keys"]
+            find_connections = PeopleConnections(processed_sentences, processed_names, args.windowsize, args.threshold)
+            if args.task == '7': 
+                json_print(find_connections.task_7_8_format(pairs_data, maximal_distance = args.maximal_distance))
+            elif args.task == '8': 
+                json_print(find_connections.task_7_8_format(pairs_data, fixed_length = args.fixed_length))
+        elif args.task == '9': 
+            json_print(SentencesConnections(processed_sentences, args.threshold).task_9_format())
+        else: print("invalid input")
+    except Exception as e:
+        print(f"unexpected error {e}")
 
 if __name__=="__main__":
     main()

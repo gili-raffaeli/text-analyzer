@@ -11,9 +11,7 @@ class CountWordsSeq:
             __sequence_length (int): The length of the sequences to extract.
         """
         try:
-            if not (isinstance(sequence_length, int) and sequence_length > 0): raise TypeError 
             self.__sequence_length = sequence_length
-            if not utils.is_processed_sentences_type(preprocessed_sentences): raise TypeError
             self.__preprocessed_sentences = preprocessed_sentences
         except TypeError as e:
             print("Invalid Parameter Type: ", e)
