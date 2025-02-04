@@ -1,15 +1,13 @@
-from find_connections import FindConnections
+from people_connections import PeopleConnections
 from preprocess import Preprocess
 import utils
-
-# python -m pytest
 
 def q6_test(sentences_path, people_path, remove_words_path, output_path, window_size, threshold) -> bool:
     try:
         preprocessor = Preprocess(remove_words_path, sentences_path, people_path)
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         preprocessed_people = preprocessor.get_preprocessed_people()
-        result = FindConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_6_format()
+        result = PeopleConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_6_format()
         actual_json_str = utils.to_json_str(result)
         expected_json_str = utils.read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
@@ -49,7 +47,7 @@ def test3():
         "threshold" : 2,
     }
     assert q6_test(**input)
-test3()
+
 def test4():
     input = {
         "sentences_path": 'examples/Q6_examples/exmaple_4/sentences_small_4.csv',

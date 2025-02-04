@@ -1,6 +1,5 @@
 from typing import Dict, List
 from count_words_seq import CountWordsSeq
-import utils
 
 
 class CountPeopleMentions:

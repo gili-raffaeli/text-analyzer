@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 from count_people_mentions import CountPeopleMentions
 from itertools import combinations
 
-class FindConnections:
+class PeopleConnections:
     def __init__(self, preprocessed_sentences, preprocessed_people, window_size, threshold):
         self.__preprocessed_sentences = preprocessed_sentences
         self.__preprocessed_people = preprocessed_people
@@ -82,9 +82,10 @@ class FindConnections:
     def __check_connections(self, pairs_to_check: List[List[str]], maximal_distance: Optional[int], fixed_length: Optional[int]) -> List[List[any]]:
         """Checks whether each pair in pairs_to_check is connected within the given maximal_distance or a fixed-length path."""
         try:
+            sorted_pairs = sorted([sorted(name for name in pair) for pair in pairs_to_check])
             check_connection = self.__create_people_connected_dict()
             result = []
-            for pair in pairs_to_check:
+            for pair in sorted_pairs:
                 is_connections = self.__check_for_connection(pair[0], pair[1], [], check_connection, maximal_distance, fixed_length)
                 result.append(pair + [is_connections])
             return result

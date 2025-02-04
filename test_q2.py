@@ -2,8 +2,6 @@ from preprocess import Preprocess
 from count_words_seq import CountWordsSeq
 import utils
 
-# python -m pytest
-
 def q2_test(sentences_path, remove_words_path, output_path, sequence_length) -> bool:
     try:
         preprocess_object = Preprocess(remove_words_path, sentences_path)
@@ -19,7 +17,7 @@ def test1():
         "sentences_path": 'examples/Q2_examples/example_1/sentences_small_1.csv',
         "remove_words_path": 'data/REMOVEWORDS.csv',
         "output_path": 'examples/Q2_examples/example_1/Q2_result1.json',
-        # "sequence_length": 3
+        "sequence_length": 3
     }
     assert q2_test(**input)
 

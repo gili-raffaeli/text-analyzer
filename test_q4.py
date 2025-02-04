@@ -3,8 +3,6 @@ from preprocess import Preprocess
 from search_engine import SearchEngine
 import utils
 
-# python -m pytest
-
 def q4_test(sentences_path, kseq_query_keys_path, remove_words_path, output_path) -> bool:
     try:
         preprocessor = Preprocess(remove_words_path, sentences_path)

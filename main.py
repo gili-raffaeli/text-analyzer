@@ -4,14 +4,16 @@ import argparse
 from pathlib import Path
 from count_people_mentions import CountPeopleMentions
 from count_words_seq import CountWordsSeq
-from find_connections import FindConnections
+from people_connections import PeopleConnections
 from person_contexts import PersonContexts
 from preprocess import Preprocess
 from search_engine import SearchEngine
+from sentences_connections import SentencesConnections
 import utils
 
 
 def readargs(args=None):
+    """Parses command-line arguments for the text analysis project."""
     parser = argparse.ArgumentParser(
         prog='Text Analyzer project',
     )
@@ -63,90 +65,101 @@ def readargs(args=None):
                         )
     return parser.parse_args(args)
 
-def int_validation(var: any) -> bool:
-    if var: 
-        if type(var) != int or var < 1: 
-            print("invalid input")
-            return False
-    return True
-
-def validate_file_exists(file_path: any) -> bool:
-    if type(file_path) != str:
+def is_valid_int(var: any) -> bool:
+    """Validates if the input variable is a positive integer."""
+    if type(var) != int or var < 1: 
         print("invalid input")
         return False
-    if not Path(file_path).exists():
+    return True
+
+def is_valid_file(file_path: any) -> bool:
+    """Checks if the given file path is a valid existing file."""
+    if not isinstance(file_path, str) or not Path(file_path).exists():
         print("invalid input")
         return False
     return True
 
 def validate_args(args) -> bool:
-    if args.preprocessed == None:
-        if not validate_file_exists(args.removewords) or not validate_file_exists(args.sentences): return False
-        if args.task not in ['2', '4'] or args.names != None: 
-            if not validate_file_exists(args.names): return False
+    """Validates command-line arguments before execution."""
+    if args.preprocessed is None:
+        if not is_valid_file(args.removewords) or not is_valid_file(args.sentences): return False
+        if args.task not in ['2', '4', '9'] or args.names is not None: 
+            if not is_valid_file(args.names): return False
     else:
-        if not validate_file_exists(args.preprocessed): return False
+        if not is_valid_file(args.preprocessed): return False
 
     if args.task == '1': pass
     elif args.task == '2':
-        if not int_validation(args.maxk): return False
+        if not is_valid_int(args.maxk): return False
     elif args.task == '3': pass
     elif args.task == '4':
-        if not validate_file_exists(args.qsek_query_path): return False 
+        if not is_valid_file(args.qsek_query_path): return False 
     elif args.task == '5':
-        if not int_validation(args.maxk): return False
-    elif args.task == '6':
-        if not int_validation(args.windowsize) or not int_validation(args.threshold): return False
-    elif args.task in ['7', '8']:
-        if not int_validation(args.windowsize) or not int_validation(args.threshold): return False
-        if not validate_file_exists(args.pairs): return False
-        if args.task == '7':
-            if not int_validation(args.maximal_distance): return False
-        elif args.task == '8':
-            if not int_validation(args.fixed_length): return False
-    elif args.task == '9': pass 
+        if not is_valid_int(args.maxk): return False
+    elif args.task in ['6', '7', '8']:
+        if not is_valid_int(args.windowsize) or not is_valid_int(args.threshold): return False
+        if args.task in ['7', '8']:
+            if not is_valid_file(args.pairs): return False
+            if args.task == '7':
+                if not is_valid_int(args.maximal_distance): return False
+            elif args.task == '8':
+                if not is_valid_int(args.fixed_length): return False
+    elif args.task == '9':
+        if not is_valid_int(args.threshold): return False 
     else:
         print("invalid input")
         return False
     return True
 
 def json_print(object):
+    """Prints a Python object as a formatted JSON string."""
     print(utils.to_json_str(object))
 
 def main():
+    """Main function that reads arguments, validates them, and runs the appropriate task."""
     args = readargs()
     if not validate_args(args): return
 
-    if args.preprocessed == None:
+    if args.preprocessed is None:
         processed_object = Preprocess(args.removewords, args.sentences, args.names)
         processed_data = processed_object.task_1_format()
     else:
+        if args.task == '1':
+            print("invalid input")
+            return
         processed_data = utils.read_json_file(args.preprocessed)
         if not processed_data: return
 
     try:    
         processed_sentences = processed_data["Question 1"]["Processed Sentences"]
         processed_names = processed_data["Question 1"]["Processed Names"]
+        # if processed_sentences
     except Exception as e:
         print(f'Error in getting processed_sentences processed_names: {e}')
         return
     
-    if args.task == '1': json_print(processed_data)
-    elif args.task == '2': json_print(CountWordsSeq(processed_sentences, args.maxk).task_2_format())
-    elif args.task == '3': json_print(CountPeopleMentions(processed_names, processed_sentences).task_3_format())
+    if args.task == '1': 
+        json_print(processed_data)
+    elif args.task == '2': 
+        json_print(CountWordsSeq(processed_sentences, args.maxk).task_2_format())
+    elif args.task == '3': 
+        json_print(CountPeopleMentions(processed_names, processed_sentences).task_3_format())
     elif args.task == '4':
-        query_data = utils.read_json_file(args.qsek_query_path)
-        kseq_query_keys = query_data["keys"] # processed_object.clean_List_List_str(...) 
-        json_print(SearchEngine(processed_sentences, kseq_query_keys).task_4_format())
-    elif args.task == '5': json_print(PersonContexts(processed_sentences, processed_names, args.maxk).task_5_format())
-    elif args.task == '6': json_print(FindConnections(processed_sentences, processed_names, args.windowsize, args.threshold).task_6_format())
+        query_data = utils.read_json_file(args.qsek_query_path)["keys"]
+        json_print(SearchEngine(processed_sentences, query_data).task_4_format())
+    elif args.task == '5': 
+        json_print(PersonContexts(processed_sentences, processed_names, args.maxk).task_5_format())
+    elif args.task == '6': 
+        json_print(PeopleConnections(processed_sentences, processed_names, args.windowsize, args.threshold).task_6_format())
     elif args.task in ['7', '8']:
-        query_data = utils.read_json_file(args.pairs)
-        keys = sorted([sorted(name for name in pair) for pair in query_data["keys"]])
-        find_connections = FindConnections(processed_sentences, processed_names, args.windowsize, args.threshold)
-        if args.task == '7': json_print(find_connections.task_7_8_format(keys, maximal_distance = args.maximal_distance))
-        elif args.task == '8': json_print(find_connections.task_7_8_format(keys, fixed_length = args.fixed_length))
-    elif args.task == '9': pass 
+        pairs_data = utils.read_json_file(args.pairs)["keys"]
+        find_connections = PeopleConnections(processed_sentences, processed_names, args.windowsize, args.threshold)
+        if args.task == '7': 
+            json_print(find_connections.task_7_8_format(pairs_data, maximal_distance = args.maximal_distance))
+        elif args.task == '8': 
+            json_print(find_connections.task_7_8_format(pairs_data, fixed_length = args.fixed_length))
+    elif args.task == '9': 
+        json_print(SentencesConnections(processed_sentences, args.threshold).task_9_format())
     else: print("invalid input")
 
 if __name__=="__main__":

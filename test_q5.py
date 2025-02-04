@@ -2,8 +2,6 @@ from person_contexts import PersonContexts
 from preprocess import Preprocess
 import utils
 
-# python -m pytest
-
 def q5_test(sentences_path, people_path, remove_words_path, output_path, sequence_length) -> bool:
     try:
         preprocessor = Preprocess(remove_words_path, sentences_path, people_path)

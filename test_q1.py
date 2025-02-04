@@ -1,8 +1,6 @@
 from preprocess import Preprocess
 import utils
 
-# python -m pytest
-
 def q1_test(sentences_path, people_path, remove_words_path, output_path) -> bool:
     try:
         preprocess_object = Preprocess(remove_words_path, sentences_path, people_path)

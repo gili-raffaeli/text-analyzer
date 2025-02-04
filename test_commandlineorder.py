@@ -298,26 +298,26 @@ def test_task8_commandline(command, expected_file):
         pytest.fail(f"Task 8 failed for command: {command}\nDifferences:\n{diff}")
 
 
-# # Parameterized pytest for Task 9 (Grouping Sentences by Shared Words)
-# @pytest.mark.parametrize("command,expected_file", [
-#     # Test case 1: Task 9, Example 1
-#     (
-#         "python main.py -t 9 -s Q9_examples/example_1/sentences_small_1.csv -r REMOVEWORDS.csv --threshold 1",
-#         "Q9_examples/example_1/Q9_result1.json"
-#     ),
-#     # Test case 2: Task 9, Example 2
-#     (
-#         "python main.py -t 9 -s Q9_examples/exmaple_2/sentences_small_2.csv -r REMOVEWORDS.csv --threshold 3",
-#         "Q9_examples/exmaple_2/Q9_result2.json"
-#     ),
-#     # Test case 3: Task 9, Example 3
-#     (
-#         "python main.py -t 9 -s Q9_examples/exmaple_3/sentences_small_3.csv -r REMOVEWORDS.csv --threshold 6",
-#         "Q9_examples/exmaple_3/Q9_result3.json"
-#     )
-# ])
-# def test_task9_commandline(command, expected_file):
-#     passed, diff = run_command_and_compare(command, expected_file)
-#     if not passed:
-#         pytest.fail(f"Task 9 failed for command: {command}\nDifferences:\n{diff}")
+# Parameterized pytest for Task 9 (Grouping Sentences by Shared Words)
+@pytest.mark.parametrize("command,expected_file", [
+    # Test case 1: Task 9, Example 1
+    (
+        "python main.py -t 9 -s Q9_examples/example_1/sentences_small_1.csv -r REMOVEWORDS.csv --threshold 1",
+        "Q9_examples/example_1/Q9_result1.json"
+    ),
+    # Test case 2: Task 9, Example 2
+    (
+        "python main.py -t 9 -s Q9_examples/exmaple_2/sentences_small_2.csv -r REMOVEWORDS.csv --threshold 3",
+        "Q9_examples/exmaple_2/Q9_result2.json"
+    ),
+    # Test case 3: Task 9, Example 3
+    (
+        "python main.py -t 9 -s Q9_examples/exmaple_3/sentences_small_3.csv -r REMOVEWORDS.csv --threshold 6",
+        "Q9_examples/exmaple_3/Q9_result3.json"
+    )
+])
+def test_task9_commandline(command, expected_file):
+    passed, diff = run_command_and_compare(command, expected_file)
+    if not passed:
+        pytest.fail(f"Task 9 failed for command: {command}\nDifferences:\n{diff}")
 

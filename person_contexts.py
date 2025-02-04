@@ -1,7 +1,6 @@
 from typing import Any, Dict, List
 from count_words_seq import CountWordsSeq
 from search_engine import SearchEngine
-import utils
 
 
 class PersonContexts:

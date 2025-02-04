@@ -1,9 +1,6 @@
 from count_people_mentions import CountPeopleMentions
 from preprocess import Preprocess
-from count_words_seq import CountWordsSeq
 import utils
-
-# python -m pytest
 
 def q3_test(sentences_path, people_path, remove_words_path, output_path) -> bool:
     try:

@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, List
+from typing import Dict, List
 
 def is_processed_sentences_type(variable: any) -> bool:
     if isinstance(variable, list) and all(

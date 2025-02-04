@@ -1,6 +1,4 @@
-import json
 from typing import Dict, List
-import utils
 import pandas as pd
 import string
 import re
@@ -76,6 +74,7 @@ class Preprocess:
             )
         except Exception as e:
             print(f"Error in process_single_column_file: {e}")
+            return []
     
     def __preprocess_remove_words(self, remove_words_path: str) -> List[str]:
         """Loads and processes the words that need to be removed from the text."""
@@ -96,9 +95,10 @@ class Preprocess:
             for sentence in cleaned_sentences:
                 remove_sentence = self.__remove_words(sentence)
                 if remove_sentence: preprocess_sentences.append(remove_sentence)
-            return preprocess_sentences
+            return preprocess_sentences if preprocess_sentences else [[]]
         except Exception as e:
             print(f"Error processing sentences: {e}")
+            return [[]]
     
     def __is_name_used(self, name: List[str]) -> bool:
         """Checks if the given name has already been used (to avoid duplicates)."""
@@ -135,6 +135,7 @@ class Preprocess:
             return people_names
         except Exception as e:
             print(f"Error processing people data: {e}")
+            return [[]]
 
     def clean_List_List_str(self, object: List[List[str]]) -> List[List[str]]:
         """Processes a list of lists of strings by cleaning each word and removing unwanted words."""

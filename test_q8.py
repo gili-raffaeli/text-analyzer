@@ -1,10 +1,8 @@
 import json
 import timeit
-from find_connections import FindConnections
+from people_connections import PeopleConnections
 from preprocess import Preprocess
 import utils
-
-# python -m pytest
 
 def q8_test(sentences_path, people_path, people_connections, remove_words_path, output_path, window_size, threshold, maximal_distance, fixed_length) -> bool:
     try:
@@ -19,7 +17,7 @@ def q8_test(sentences_path, people_path, people_connections, remove_words_path, 
             print("oops")
         formated = sorted([sorted(name for name in pair) for pair in expected_json["keys"]])
         start_time = timeit.default_timer()
-        result = FindConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_7_8_format(formated, maximal_distance, fixed_length)
+        result = PeopleConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_7_8_format(formated, maximal_distance, fixed_length)
         end_time = timeit.default_timer()
         runtime = end_time - start_time
         # print("runtime: ", runtime)
@@ -72,6 +70,4 @@ def test3():
         "maximal_distance": 1000
     }
     assert q8_test(**input)
-# test1()
-# test2()
-# test3()
+    
