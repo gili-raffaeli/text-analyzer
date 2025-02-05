@@ -52,7 +52,7 @@ class SentencesConnections:
             groups.append({i})
         return groups
     
-    def __sort_sentences_groups(self, sentences: List[List[str]], index_groups: List[Set[int]]) -> List[List[str]]:
+    def __organize_sentence_groups(self, sentences: List[List[str]], index_groups: List[Set[int]]) -> List[List[str]]:
         """Sorts groups by size and lexicographical order."""
         sentence_groups = [sorted([sentences[i] for i in index_group]) for index_group in index_groups]
         return sorted(sentence_groups, key=lambda group: (len(group), group))
@@ -63,7 +63,7 @@ class SentencesConnections:
         sentences_indexes_pairs = self.__get_all_pairs(sentences)
         right_pairs = self.__find_correct_pairs(sentences_indexes_pairs, self.__threshold)
         groups = self.__create_sentences_groups(sentences, right_pairs)
-        sentence_groups = self.__sort_sentences_groups(sentences, groups)
+        sentence_groups = self.__organize_sentence_groups(sentences, groups)
         return [[f"Group {i+1}", group] for i, group in enumerate(sentence_groups)]
 
     def task_9_format(self) -> Dict[str, Dict[str, List[any]]]:
