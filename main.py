@@ -118,8 +118,12 @@ def json_print(object):
 
 def main():
     """Main function that reads arguments, validates them, and runs the appropriate task."""
-    args = readargs()
-    if not validate_args(args): return
+    try: 
+        args = readargs()
+        if not validate_args(args): return
+    except Exception as e:
+        print(f"Error with args: {e}")
+        return
 
     try:    
         if args.preprocessed is None or args.task == '1':
