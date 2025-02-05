@@ -33,7 +33,7 @@ class SentencesConnections:
         """Groups sentences based on their connections."""
         groups = []
         for p1, p2 in pairs:
-            added_to = -1 #maybe can be better
+            added_to = -1
             for i in range(len(groups)):
                 if p1 in groups[i] or p2 in groups[i]:
                     if added_to == -1:

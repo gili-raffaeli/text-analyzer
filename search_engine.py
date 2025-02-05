@@ -3,8 +3,8 @@ from typing import Dict, List
 
 class SearchEngine:
     def __init__(self, preprocessed_sentences: List[List[str]], pro_query_keys: List[List[str]]):
-        self.__pro_k_seq = pro_query_keys # check
-        self.__preprocessed_sentences = preprocessed_sentences # check
+        self.__pro_k_seq = pro_query_keys
+        self.__preprocessed_sentences = preprocessed_sentences
 
     def __is_seq_in_sentence_(self, seq: List[str], sentence: List[str]) -> bool:
         """Checks if a given sequence appears in a sentence."""
