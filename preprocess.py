@@ -104,7 +104,7 @@ class Preprocess:
         """Checks if the given name has already been used (to avoid duplicates)."""
         return name in self.__used_names 
 
-    def __process_nicknames(self, nicknames):
+    def __process_nicknames(self, nicknames) -> List[str]:
         """Processes and cleans the nicknames, ensuring no duplicates."""
         all_nicknames = []
         if isinstance(nicknames, str):
@@ -118,7 +118,7 @@ class Preprocess:
             self.__used_names.extend(temp_used_names)
         return all_nicknames
     
-    def __create_person(self, main_name_clean, nicknames):
+    def __create_person(self, main_name_clean: List[str] , nicknames: list[List[str]]) -> List[List[any]]:
         """Creates a person's entry with cleaned names and associated nicknames."""
         person_names = [main_name_clean]
         self.__used_names.append(main_name_clean)
@@ -126,7 +126,7 @@ class Preprocess:
         person_names.append(all_nicknames)
         return person_names
 
-    def __preprocess_people(self, people_path: str):
+    def __preprocess_people(self, people_path: str) -> List[List[List[any]]]:
         """Processes the people data by cleaning names and nicknames, ensuring no duplicates."""
         try:
             people_data = self.__load_csv_file(people_path)

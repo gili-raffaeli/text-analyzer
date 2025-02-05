@@ -1,4 +1,5 @@
 from preprocess import Preprocess
+import runtime_q9
 from sentences_connections import SentencesConnections
 import os
 from utils import to_json_str, read_json_file_to_str, create_temp_file
@@ -2948,3 +2949,6 @@ ms
     threshold = 6
     
     assert q9_test(sentences_content, remove_words_content, output_content, threshold)
+
+def test_runtime():
+    assert runtime_q9.runtime()

@@ -1,12 +1,15 @@
-# 0:30
-# Show usage instructions
-python3 main.py --help
+# 2:37
+# Task 8 demonstration 
+python main.py -t 8 -s Q8_examples/example_1/sentences_small_1.csv -n Q8_examples/example_1/people_small_1.csv -r REMOVEWORDS.csv --windowsize 3 --threshold 2 --fixed_length 2 --pairs Q8_examples/example_1/people_connections_1.json
 
-# 1:20
-# Convert a sudoku puzzle to our format and solve it
-python3 main.py --convert --input puzzle1.txt --output puzzle1.json
-python3 main.py --solve --input puzzle1.json
+# 2:46
+# Task 8 running time
+python runtime_q8.py 
 
-# 2:00
-# Extension explaining solution
-python3 main.py --solve --explain --input puzzle1.json
+# 4:13
+# Task 9 demonstration
+python main.py -t 9 -s Q9_examples/example_1/sentences_small_1.csv -r REMOVEWORDS.csv --threshold 1
+
+# 4:19
+# Task 9 running time
+python runtime_q9.py 

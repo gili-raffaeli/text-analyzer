@@ -1,0 +1,937 @@
+import timeit
+from preprocess import Preprocess
+from sentences_connections import SentencesConnections
+import os
+from utils import create_temp_file
+
+def q9_test(sentences_content, remove_words_content, output_content, threshold) -> bool:
+    try:
+        sentences_path = create_temp_file(sentences_content)
+        remove_words_path = create_temp_file(remove_words_content)
+        output_path = create_temp_file(output_content, ".json")
+
+        preprocessor = Preprocess(remove_words_path, sentences_path)
+        preprocessed_sentences = preprocessor.get_preprocessed_sentences()
+        for threshold in range(6):
+            start_time = timeit.default_timer()
+            result = SentencesConnections(preprocessed_sentences, threshold).task_9_format()
+            end_time = timeit.default_timer()
+            runtime = end_time - start_time
+            print(f"threshold: {threshold} --> time: {round(runtime, 5)}")
+
+        return True
+    except:
+        print('failed')
+        return False
+    finally:
+        os.unlink(sentences_path)
+        os.unlink(remove_words_path)
+        os.unlink(output_path)
+
+def runtime():
+    sentences_content = """sentence
+"Under a tuft of jet- black hair over boy forehead Dumbledore and  McGonagall could see a curiously shaped cut, like a bolt of lightning."
+` Is that where-?` whispered Professor  McGonagall.
+"` Yes,` said  Dumbledore.`  Dumbledore'll have that scar forever.` ` Couldn't you do something about scar,  Dumbledore?` ` Even if I could, I wouldn't."
+Scars can come in handy.
+I have one myself above my left knee that is a perfect map of the London Underground.
+"Well-- give  Dumbledore here,  Hagrid-- we'd better get this over with.`   Dumbledore took  Harry in  Harry arms and turned toward the   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley' house."
+"` Could I-- could I say good- bye to  Harry, sir?` asked  Hagrid."
+"Harry bent  Harry great, shaggy head over  Harry and gave head what must have been a very scratchy, whiskery kiss."
+"Then, suddenly,  Hagrid let out a howl like a wounded dog."
+"` Shhh!` hissed Professor  McGonagall,` you'll wake the  Muggles!` ` S- s- sorry,` sobbed  Hagrid, taking out a large, spotted handkerchief and burying  Hagrid face in handkerchief.` But I c- c-can't stand handkerchief--  Lily an'  James dead-- an' poor little  Harry off ter live with  Muggles-` ` Yes, yes, handkerchief's all very sad, but get a grip on yourself,  Hagrid, or we'll be found,` Professor  McGonagall whispered, patting  Hagrid gingerly on the arm as  Dumbledore stepped over the low garden wall and walked to the front door."
+"Dumbledore laid  Harry gently on the doorstep, took a letter out of  Dumbledore cloak, tucked letter inside  Harry's blankets, and then came back to the other two."
+"For a full minute the three of two stood and looked at the little bundle;   Hagrid's shoulders shook, Professor  McGonagall blinked furiously, and the twinkling light that usually shone from  Dumbledore's eyes seemed to have gone out."
+"` Well,` said  Dumbledore finally,` that's that."
+We've no business staying here.
+"We may as well go and join the celebrations.` ` Yeah,` said  Hagrid in a very muffled voice,` I'll be takin'  Sirius  Sirius bike back.G'night, Professor  McGonagall-- Professor  Dumbledore, sir.`  Wiping  Sirius streaming eyes on  Sirius jacket sleeve,  Hagrid swung  Hagrid onto the motorcycle and kicked the engine into life; with a roar engine rose into the air and off into the night."
+"` I shall see you soon, I expect, Professor  McGonagall,` said  Dumbledore, nodding to voice."
+Professor  McGonagall blew  McGonagall nose in reply.
+Dumbledore turned and walked back down the street.
+On the corner  Dumbledore stopped and took out the silver Put- Outer.
+"Dumbledore clicked Outer once, and twelve balls of light sped back to balls street lamps so that Privet Drive glowed suddenly orange and  Dumbledore could make out a tabby cat slinking around the corner at the other end of the street."
+Dumbledore could just see the bundle of blankets on the step of number four.
+"` Good luck,  Harry,`  Dumbledore murmured."
+"Dumbledore turned on  Dumbledore heel and with a swish of  Dumbledore cloak,  Dumbledore was gone."
+"A breeze ruffled the neat hedges of Privet Drive, which lay silent and tidy under the inky sky, the very last place you would expect astonishing things to happen."
+Harry  Potter rolled over inside  Dumbledore blankets without waking up.
+"One small hand closed on the letter beside  Dumbledore and  Dumbledore slept on, not knowing  Dumbledore was special, not knowing  Dumbledore was famous, not knowing  Dumbledore would be woken in a few hours' time by   Mrs. Dursley's scream as   Mrs. Dursley opened the front door to put out the milk bottles, nor that  Dumbledore would spend the next few weeks being prodded and pinched by  Dumbledore cousin   Dudley...  Dumbledore couldn't know that at this very moment, people meeting in secret all over the country were holding up people glasses and saying in hushed voices:` To   Harry  Potter-- the boy who lived!"
+"THE VANISHING GLASS  Nearly ten years had passed since the   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley had woken up to find   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley nephew on the front step, but Privet Drive had hardly changed at all."
+"The sun rose on the same tidy front gardens and lit up the brass number four on the   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley' front door; number crept into   Mr. Dursley and   Mrs. Dursley and    Dudley Dursley living room, which was almost exactly the same as it had been on the night when   Mr. Dursley had seen that fateful news report about the owls."
+Only the photographs on the mantelpiece really showed how much time had passed.
+"Ten years ago, there had been lots of pictures of what looked like a large pink beach ball wearing different- colored bonnets-- but    Dudley Dursley was no longer a baby, and now the photographs showed a large blond boy riding boy first bicycle, on a carousel at the fair, playing a computer game with boy father, being hugged and kissed by boy mother."
+"The room held no sign at all that another boy lived in the house, too."
+"""
+    remove_words_content = """words
+a
+about
+above
+actual
+after
+again
+against
+all
+alreadi
+also
+alway
+am
+amp
+an
+and
+ani
+anoth
+any
+anyth
+are
+around
+as
+at
+aww
+babi
+back
+be
+becaus
+because
+bed
+been
+befor
+before
+being
+below
+between
+birthday
+bit
+book
+both
+boy
+but
+by
+call
+can
+cannot
+cant
+car
+check
+com
+come
+could
+day
+did
+didn
+dinner
+do
+doe
+does
+doesn
+doing
+don
+done
+dont
+down
+during
+each
+eat
+end
+even
+ever
+everyon
+exam
+famili
+feel
+few
+final
+find
+first
+follow
+for
+found
+friday
+from
+further
+game
+get
+girl
+give
+gone
+gonna
+got
+gotta
+guess
+guy
+had
+hair
+happen
+has
+have
+haven
+having
+he
+head
+hear
+her
+here
+hers
+herself
+hey
+him
+himself
+his
+home
+hour
+hous
+how
+http
+i
+if
+im
+in
+into
+is
+isn
+it
+its
+itself
+job
+just
+keep
+know
+last
+later
+least
+leav
+let
+life
+listen
+littl
+live
+look
+lot
+lunch
+made
+make
+man
+mani
+may
+mayb
+me
+mean
+meet
+might
+mom
+monday
+month
+more
+morn
+most
+move
+movi
+much
+must
+my
+myself
+need
+never
+new
+night
+no
+nor
+not
+noth
+now
+of
+off
+on
+once
+one
+onli
+only
+or
+other
+ought
+our
+ours
+ourselves
+out
+over
+own
+peopl
+phone
+pic
+pictur
+play
+post
+put
+quot
+rain
+read
+readi
+realli
+run
+said
+same
+saw
+say
+school
+see
+seem
+she
+shop
+should
+show
+sinc
+sleep
+so
+some
+someon
+someth
+song
+soon
+sound
+start
+stay
+still
+studi
+stuff
+such
+summer
+sunday
+sure
+take
+talk
+tell
+than
+thank
+that
+the
+their
+theirs
+them
+themselves
+then
+there
+these
+they
+thing
+think
+this
+those
+though
+thought
+through
+time
+to
+today
+tomorrow
+tonight
+too
+total
+tri
+tweet
+twitpic
+twitter
+two
+u
+under
+until
+up
+updat
+use
+veri
+very
+video
+wait
+wanna
+want
+was
+watch
+way
+we
+weather
+week
+weekend
+went
+were
+what
+when
+where
+whi
+which
+while
+who
+whom
+why
+will
+with
+woke
+won
+work
+world
+would
+www
+yay
+yeah
+year
+yes
+yesterday
+yet
+you
+your
+yours
+yourself
+yourselves
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+k
+r
+s
+t
+u
+v
+w
+x
+u
+z
+mr
+miss
+mrs
+ms
+"""
+    output_content = """{
+    "Question 9": {
+        "group Matches": [
+            [
+                "Group 1",
+                [
+                    [
+                        "left",
+                        "knee",
+                        "perfect",
+                        "map",
+                        "london",
+                        "underground"
+                    ]
+                ]
+            ],
+            [
+                "Group 2",
+                [
+                    [
+                        "scars",
+                        "handy"
+                    ]
+                ]
+            ],
+            [
+                "Group 3",
+                [
+                    [
+                        "ve",
+                        "business",
+                        "staying"
+                    ]
+                ]
+            ],
+            [
+                "Group 4",
+                [
+                    [
+                        "breeze",
+                        "ruffled",
+                        "neat",
+                        "hedges",
+                        "privet",
+                        "drive",
+                        "lay",
+                        "silent",
+                        "tidy",
+                        "inky",
+                        "sky",
+                        "place",
+                        "expect",
+                        "astonishing",
+                        "things"
+                    ],
+                    [
+                        "corner",
+                        "dumbledore",
+                        "stopped",
+                        "took",
+                        "silver",
+                        "outer"
+                    ],
+                    [
+                        "dumbledore",
+                        "bundle",
+                        "blankets",
+                        "step",
+                        "number",
+                        "four"
+                    ],
+                    [
+                        "dumbledore",
+                        "clicked",
+                        "outer",
+                        "twelve",
+                        "balls",
+                        "light",
+                        "sped",
+                        "balls",
+                        "street",
+                        "lamps",
+                        "privet",
+                        "drive",
+                        "glowed",
+                        "suddenly",
+                        "orange",
+                        "dumbledore",
+                        "tabby",
+                        "cat",
+                        "slinking",
+                        "corner",
+                        "street"
+                    ],
+                    [
+                        "dumbledore",
+                        "dumbledore",
+                        "ll",
+                        "scar",
+                        "forever",
+                        "couldn",
+                        "something",
+                        "scar",
+                        "dumbledore",
+                        "wouldn"
+                    ],
+                    [
+                        "dumbledore",
+                        "laid",
+                        "harry",
+                        "gently",
+                        "doorstep",
+                        "took",
+                        "letter",
+                        "dumbledore",
+                        "cloak",
+                        "tucked",
+                        "letter",
+                        "inside",
+                        "harry",
+                        "blankets",
+                        "came"
+                    ],
+                    [
+                        "dumbledore",
+                        "turned",
+                        "dumbledore",
+                        "heel",
+                        "swish",
+                        "dumbledore",
+                        "cloak",
+                        "dumbledore"
+                    ],
+                    [
+                        "dumbledore",
+                        "turned",
+                        "walked",
+                        "street"
+                    ],
+                    [
+                        "full",
+                        "minute",
+                        "three",
+                        "stood",
+                        "looked",
+                        "little",
+                        "bundle",
+                        "hagrid",
+                        "shoulders",
+                        "shook",
+                        "professor",
+                        "mcgonagall",
+                        "blinked",
+                        "furiously",
+                        "twinkling",
+                        "light",
+                        "usually",
+                        "shone",
+                        "dumbledore",
+                        "eyes",
+                        "seemed"
+                    ],
+                    [
+                        "good",
+                        "bye",
+                        "harry",
+                        "sir",
+                        "asked",
+                        "hagrid"
+                    ],
+                    [
+                        "good",
+                        "luck",
+                        "harry",
+                        "dumbledore",
+                        "murmured"
+                    ],
+                    [
+                        "harry",
+                        "bent",
+                        "harry",
+                        "great",
+                        "shaggy",
+                        "harry",
+                        "gave",
+                        "scratchy",
+                        "whiskery",
+                        "kiss"
+                    ],
+                    [
+                        "harry",
+                        "potter",
+                        "rolled",
+                        "inside",
+                        "dumbledore",
+                        "blankets",
+                        "without",
+                        "waking"
+                    ],
+                    [
+                        "photographs",
+                        "mantelpiece",
+                        "really",
+                        "showed",
+                        "passed"
+                    ],
+                    [
+                        "professor",
+                        "mcgonagall",
+                        "blew",
+                        "mcgonagall",
+                        "nose",
+                        "reply"
+                    ],
+                    [
+                        "room",
+                        "held",
+                        "sign",
+                        "another",
+                        "lived",
+                        "house"
+                    ],
+                    [
+                        "shall",
+                        "expect",
+                        "professor",
+                        "mcgonagall",
+                        "dumbledore",
+                        "nodding",
+                        "voice"
+                    ],
+                    [
+                        "shhh",
+                        "hissed",
+                        "professor",
+                        "mcgonagall",
+                        "ll",
+                        "wake",
+                        "muggles",
+                        "sorry",
+                        "sobbed",
+                        "hagrid",
+                        "taking",
+                        "large",
+                        "spotted",
+                        "handkerchief",
+                        "burying",
+                        "hagrid",
+                        "face",
+                        "handkerchief",
+                        "stand",
+                        "handkerchief",
+                        "lily",
+                        "james",
+                        "dead",
+                        "poor",
+                        "little",
+                        "harry",
+                        "ter",
+                        "muggles",
+                        "handkerchief",
+                        "sad",
+                        "grip",
+                        "hagrid",
+                        "ll",
+                        "professor",
+                        "mcgonagall",
+                        "whispered",
+                        "patting",
+                        "hagrid",
+                        "gingerly",
+                        "arm",
+                        "dumbledore",
+                        "stepped",
+                        "low",
+                        "garden",
+                        "wall",
+                        "walked",
+                        "front",
+                        "door"
+                    ],
+                    [
+                        "small",
+                        "hand",
+                        "closed",
+                        "letter",
+                        "beside",
+                        "dumbledore",
+                        "dumbledore",
+                        "slept",
+                        "knowing",
+                        "dumbledore",
+                        "special",
+                        "knowing",
+                        "dumbledore",
+                        "famous",
+                        "knowing",
+                        "dumbledore",
+                        "woken",
+                        "hours",
+                        "dursley",
+                        "scream",
+                        "dursley",
+                        "opened",
+                        "front",
+                        "door",
+                        "milk",
+                        "bottles",
+                        "dumbledore",
+                        "spend",
+                        "next",
+                        "weeks",
+                        "prodded",
+                        "pinched",
+                        "dumbledore",
+                        "cousin",
+                        "dudley",
+                        "dumbledore",
+                        "couldn",
+                        "moment",
+                        "people",
+                        "meeting",
+                        "secret",
+                        "country",
+                        "holding",
+                        "people",
+                        "glasses",
+                        "saying",
+                        "hushed",
+                        "voices",
+                        "harry",
+                        "potter",
+                        "lived"
+                    ],
+                    [
+                        "suddenly",
+                        "hagrid",
+                        "howl",
+                        "like",
+                        "wounded",
+                        "dog"
+                    ],
+                    [
+                        "sun",
+                        "rose",
+                        "tidy",
+                        "front",
+                        "gardens",
+                        "lit",
+                        "brass",
+                        "number",
+                        "four",
+                        "dursley",
+                        "dursley",
+                        "dudley",
+                        "dursley",
+                        "front",
+                        "door",
+                        "number",
+                        "crept",
+                        "dursley",
+                        "dursley",
+                        "dudley",
+                        "dursley",
+                        "living",
+                        "room",
+                        "almost",
+                        "exactly",
+                        "dursley",
+                        "seen",
+                        "fateful",
+                        "news",
+                        "report",
+                        "owls"
+                    ],
+                    [
+                        "ten",
+                        "years",
+                        "ago",
+                        "lots",
+                        "pictures",
+                        "looked",
+                        "like",
+                        "large",
+                        "pink",
+                        "beach",
+                        "ball",
+                        "wearing",
+                        "different",
+                        "colored",
+                        "bonnets",
+                        "dudley",
+                        "dursley",
+                        "longer",
+                        "baby",
+                        "photographs",
+                        "showed",
+                        "large",
+                        "blond",
+                        "riding",
+                        "bicycle",
+                        "carousel",
+                        "fair",
+                        "playing",
+                        "computer",
+                        "father",
+                        "hugged",
+                        "kissed",
+                        "mother"
+                    ],
+                    [
+                        "tuft",
+                        "jet",
+                        "black",
+                        "forehead",
+                        "dumbledore",
+                        "mcgonagall",
+                        "curiously",
+                        "shaped",
+                        "cut",
+                        "like",
+                        "bolt",
+                        "lightning"
+                    ],
+                    [
+                        "vanishing",
+                        "glass",
+                        "nearly",
+                        "ten",
+                        "years",
+                        "passed",
+                        "since",
+                        "dursley",
+                        "dursley",
+                        "dudley",
+                        "dursley",
+                        "woken",
+                        "dursley",
+                        "dursley",
+                        "dudley",
+                        "dursley",
+                        "nephew",
+                        "front",
+                        "step",
+                        "privet",
+                        "drive",
+                        "hardly",
+                        "changed"
+                    ],
+                    [
+                        "well",
+                        "dumbledore",
+                        "finally"
+                    ],
+                    [
+                        "well",
+                        "dumbledore",
+                        "hagrid",
+                        "better",
+                        "dumbledore",
+                        "took",
+                        "harry",
+                        "harry",
+                        "arms",
+                        "turned",
+                        "toward",
+                        "dursley",
+                        "dursley",
+                        "dudley",
+                        "dursley",
+                        "house"
+                    ],
+                    [
+                        "well",
+                        "go",
+                        "join",
+                        "celebrations",
+                        "hagrid",
+                        "muffled",
+                        "voice",
+                        "ll",
+                        "takin",
+                        "sirius",
+                        "sirius",
+                        "bike",
+                        "professor",
+                        "mcgonagall",
+                        "professor",
+                        "dumbledore",
+                        "sir",
+                        "wiping",
+                        "sirius",
+                        "streaming",
+                        "eyes",
+                        "sirius",
+                        "jacket",
+                        "sleeve",
+                        "hagrid",
+                        "swung",
+                        "hagrid",
+                        "onto",
+                        "motorcycle",
+                        "kicked",
+                        "engine",
+                        "roar",
+                        "engine",
+                        "rose",
+                        "air"
+                    ],
+                    [
+                        "whispered",
+                        "professor",
+                        "mcgonagall"
+                    ]
+                ]
+            ]
+        ]
+    }
+}"""
+    threshold = 1
+    
+    assert q9_test(sentences_content, remove_words_content, output_content, threshold)
+    return True
+
+runtime()

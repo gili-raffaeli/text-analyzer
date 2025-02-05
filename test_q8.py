@@ -1,8 +1,8 @@
-import timeit
 from people_connections import PeopleConnections
 from preprocess import Preprocess
 import os
 from utils import to_json_str, read_json_file_to_str, create_temp_file, read_json_file
+import runtime_q8
 
 def q8_test(sentences_content, people_content, people_connections_content, remove_words_content, output_content, window_size, threshold, fixed_length) -> bool:
     try:
@@ -16,14 +16,9 @@ def q8_test(sentences_content, people_content, people_connections_content, remov
         preprocessed_sentences = preprocessor.get_preprocessed_sentences()
         preprocessed_people = preprocessor.get_preprocessed_people()
         pairs_data = read_json_file(people_connections_path)["keys"]
-        start_time = timeit.default_timer()
         result = PeopleConnections(preprocessed_sentences, preprocessed_people, window_size, threshold).task_7_8_format(pairs_data, fixed_length = fixed_length)
-        end_time = timeit.default_timer()
-        runtime = end_time - start_time
-        # print("runtime: ", runtime)
-        
+
         actual_json_str = to_json_str(result)
-        # print("actual_json_str: ", actual_json_str)
         expected_json_str = read_json_file_to_str(output_path)
         return expected_json_str == actual_json_str
     except:
@@ -1371,4 +1366,6 @@ ms
     fixed_length = 8
     
     assert q8_test(sentences_content, people_content, people_connections_content, remove_words_content, output_content, window_size, threshold, fixed_length)
-    
+
+def test_runtime():
+    assert runtime_q8.runtime()

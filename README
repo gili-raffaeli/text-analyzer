@@ -8,8 +8,23 @@
 
 ## Design
 
-I chose to 
+I split the code into classes for each type of operation 
+because it keeps things modular and easy to manage.
 
-We chose a perpetual motion machine over a time machine because
-of the aging cost of moving to the past, and the dangerous paradoxes
-which can arise.
+I stored useful data like mention counts and search results in dictionaries over lists 
+because this way I can use it in other tasks with O(1) efficiency.
+
+In the people connections I got the people in each sentence, and after that calculate the window.
+Instead of calculating it for each window. This way I didn't do unnecessary calculations, 
+or calculate the same thing multiple times.
+
+I used a dictionary for connections in the graph over class of nodes or edges 
+because I wanted quick access to a person’s neighbors without extra processing.
+
+I used recursion for path finding because it naturally handles varying depths
+and allows easy constraints on maximal distance or fixed-length paths.
+
+In the sentences connections I used the sentences indexes for analysis over the sentences themselves
+because its more efficient that we don't need to duplicate and go over all the sentences, instead we check it on int.
+
+I kept the sentence connection logic separate from the people graph because the two tasks have different structures and optimization needs.
