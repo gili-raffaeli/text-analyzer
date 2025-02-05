@@ -13,7 +13,8 @@ class PeopleConnections:
     def __get_mentions_in_sentence(self, sentence) -> Dict[str, int]:
         """Returns a dictionary of people mentioned in a sentence with their corresponding mention count."""
         try:
-            return CountPeopleMentions(self.__preprocessed_people, [sentence]).count_people_mentions()
+            mentions = CountPeopleMentions(self.__preprocessed_people, [sentence]).count_people_mentions()
+            return list(mentions.keys())
         except Exception as e:
             print(f"Error in get_mentions_in_sentence: {e}")
 
@@ -22,7 +23,7 @@ class PeopleConnections:
         mentioned_people = []
         for sentence in self.__preprocessed_sentences:
             mentions = self.__get_mentions_in_sentence(sentence)
-            mentioned_people.append(list(mentions.keys()) if mentions else [])
+            mentioned_people.append(mentions if mentions else [])
         return mentioned_people
     
     def __mentioned_people_in_window(self, people_mentions: List[List[str]], i: int) -> List[str]:
@@ -79,6 +80,9 @@ class PeopleConnections:
         except Exception as e:
             print(f"Error in check_for_connection: {e}")
 
+
+    
+
     def __check_connections(self, pairs_to_check: List[List[str]], maximal_distance: Optional[int], fixed_length: Optional[int]) -> List[List[any]]:
         """Checks whether each pair in pairs_to_check is connected within the given maximal_distance or a fixed-length path."""
         try:
@@ -86,7 +90,10 @@ class PeopleConnections:
             check_connection = self.__create_people_connected_dict()
             result = []
             for pair in sorted_pairs:
-                is_connections = self.__check_for_connection(pair[0], pair[1], [], check_connection, maximal_distance, fixed_length)
+                if pair[0] not in check_connection or pair[1] not in check_connection: 
+                    is_connections = False
+                else: 
+                    is_connections = self.__check_for_connection(pair[0], pair[1], [], check_connection, maximal_distance, fixed_length)
                 result.append(pair + [is_connections])
             return result
         except Exception as e:
