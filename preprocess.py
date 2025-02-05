@@ -104,6 +104,28 @@ class Preprocess:
         """Checks if the given name has already been used (to avoid duplicates)."""
         return name in self.__used_names 
 
+    def __process_nicknames(self, nicknames):
+        """Processes and cleans the nicknames, ensuring no duplicates."""
+        all_nicknames = []
+        if isinstance(nicknames, str):
+            temp_used_names = []
+            for nickname in nicknames.split(','):
+                cleaned_nickname = self.__clean_text(nickname)
+                fixed_nickname = self.__remove_words(cleaned_nickname)
+                if not self.__is_name_used(fixed_nickname):
+                    all_nicknames.append(fixed_nickname)
+                    temp_used_names.append(fixed_nickname)
+            self.__used_names.extend(temp_used_names)
+        return all_nicknames
+    
+    def __create_person(self, main_name_clean, nicknames):
+        """Creates a person's entry with cleaned names and associated nicknames."""
+        person_names = [main_name_clean]
+        self.__used_names.append(main_name_clean)
+        all_nicknames = self.__process_nicknames(nicknames)
+        person_names.append(all_nicknames)
+        return person_names
+
     def __preprocess_people(self, people_path: str):
         """Processes the people data by cleaning names and nicknames, ensuring no duplicates."""
         try:
@@ -115,45 +137,14 @@ class Preprocess:
                 if not isinstance(main_name, str): continue
                 main_name_clean = self.__remove_words(self.__clean_text(main_name))
                 if self.__is_name_used(main_name_clean): continue
-                self.__used_names.append(main_name_clean)
-
                 if any(main_name_clean == person[0] for person in people_names): continue
                 if not main_name_clean: continue
-                person_names = [main_name_clean]
-                all_nicknames = []
-                if isinstance(nicknames, str):
-                    temp_used_names = []
-                    for nickname in nicknames.split(','):
-                        cleaned_nickname = self.__clean_text(nickname)
-                        fixed_nickname = self.__remove_words(cleaned_nickname)
-                        if not self.__is_name_used(fixed_nickname):
-                            all_nicknames.append(fixed_nickname)
-                            temp_used_names.append(fixed_nickname)        
-                    self.__used_names.extend(temp_used_names)
-                person_names.append(all_nicknames)
-                people_names.append(person_names)
+                
+                people_names.append(self.__create_person(main_name_clean, nicknames))
             return people_names
         except Exception as e:
             print(f"Error processing people data: {e}")
             return []
-
-    def clean_List_List_str(self, object: List[List[str]]) -> List[List[str]]:
-        """Processes a list of lists of strings by cleaning each word and removing unwanted words."""
-        try:
-            cleaned_object = []
-            for sub_list in object:
-                if not sub_list: continue
-                cleaned_sub_list = []
-                for word in sub_list:
-                    if not word: continue
-                    cleaned_word = self.__clean_text(word)
-                    filtered_word = self.__remove_words(cleaned_word)
-                    cleaned_sub_list.extend(filtered_word)
-                if cleaned_sub_list: cleaned_object.append(cleaned_sub_list)
-            return cleaned_object
-        except Exception as e:
-            print(f"Error in clean_List_List_str: {e}")
-            return None
 
     def task_1_format(self) -> Dict[str, Dict[str, any]]:
         """Converts the preprocessed data into the task 1 format."""
