@@ -80,9 +80,6 @@ class PeopleConnections:
         except Exception as e:
             print(f"Error in check_for_connection: {e}")
 
-
-    
-
     def __check_connections(self, pairs_to_check: List[List[str]], maximal_distance: Optional[int], fixed_length: Optional[int]) -> List[List[any]]:
         """Checks whether each pair in pairs_to_check is connected within the given maximal_distance or a fixed-length path."""
         try:
